@@ -120,13 +120,13 @@ are rejected.
 
 **Recommended branch**: `feature/vehicle-management`
 
-- [ ] T044 [P] [US1] Write Vehicle ownership, plate, year, update, and deactivation tests in `src/test/kotlin/com/example/techchallenge/vehicle/domain/VehicleTest.kt`
-- [ ] T045 [P] [US1] Write vehicle CRUD, plate uniqueness, and customer-list integration tests in `src/test/kotlin/com/example/techchallenge/vehicle/api/VehicleApiIntegrationTest.kt`
-- [ ] T046 [P] [US1] Implement Vehicle aggregate and ownership invariants in `src/main/kotlin/com/example/techchallenge/vehicle/domain/model/Vehicle.kt`
-- [ ] T047 [P] [US1] Define Vehicle repository contract in `src/main/kotlin/com/example/techchallenge/vehicle/domain/repository/VehicleRepository.kt`
-- [ ] T048 [US1] Implement Vehicle JPA entity, mapper, queries, and adapter in `src/main/kotlin/com/example/techchallenge/vehicle/infrastructure/persistence/VehiclePersistenceAdapter.kt`
-- [ ] T049 [US1] Implement register, get, update, list, customer-list, and remove Vehicle use cases with Customer ownership checks in `src/main/kotlin/com/example/techchallenge/vehicle/application/usecase/VehicleUseCases.kt`
-- [ ] T050 [US1] Implement Vehicle DTOs and secured REST operations in `src/main/kotlin/com/example/techchallenge/vehicle/api/controller/VehicleController.kt`
+- [X] T044 [P] [US1] Write Vehicle ownership, plate, year, update, and deactivation tests in `src/test/kotlin/com/example/techchallenge/vehicle/domain/VehicleTest.kt`
+- [X] T045 [P] [US1] Write vehicle CRUD, plate uniqueness, and customer-list integration tests in `src/test/kotlin/com/example/techchallenge/vehicle/api/VehicleApiIntegrationTest.kt`
+- [X] T046 [P] [US1] Implement Vehicle aggregate and ownership invariants in `src/main/kotlin/com/example/techchallenge/vehicle/domain/model/Vehicle.kt`
+- [X] T047 [P] [US1] Define Vehicle repository contract in `src/main/kotlin/com/example/techchallenge/vehicle/domain/repository/VehicleRepository.kt`
+- [X] T048 [US1] Implement Vehicle JPA entity, mapper, queries, and adapter in `src/main/kotlin/com/example/techchallenge/vehicle/infrastructure/persistence/VehiclePersistenceAdapter.kt`
+- [X] T049 [US1] Implement register, get, update, list, customer-list, and remove Vehicle use cases with Customer ownership checks in `src/main/kotlin/com/example/techchallenge/vehicle/application/usecase/VehicleUseCases.kt`
+- [X] T050 [US1] Implement Vehicle DTOs and secured REST operations in `src/main/kotlin/com/example/techchallenge/vehicle/api/controller/VehicleController.kt`
 
 ### Service Catalog Capability
 

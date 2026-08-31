@@ -3,6 +3,7 @@ package com.example.techchallenge
 import com.example.techchallenge.authentication.infrastructure.persistence.SpringDataAdministratorRepository
 import com.example.techchallenge.customer.infrastructure.persistence.SpringDataCustomerRepository
 import jakarta.persistence.EntityManager
+import com.example.techchallenge.vehicle.infrastructure.persistence.SpringDataVehicleRepository
 import org.junit.jupiter.api.Test
 import org.springframework.boot.test.context.SpringBootTest
 import org.springframework.test.context.bean.override.mockito.MockitoBean
@@ -26,6 +27,9 @@ class TechChallengeApplicationTests {
 
     @MockitoBean
     private lateinit var entityManager: EntityManager
+
+    @MockitoBean
+    private lateinit var vehicleRepository: SpringDataVehicleRepository
 
     @Test
     fun contextLoads() = Unit
