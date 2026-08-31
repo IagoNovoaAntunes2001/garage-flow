@@ -35,3 +35,15 @@ out/
 
 ### VS Code ###
 .vscode/
+
+### Kotlin / local environment ###
+*.class
+*.jar
+*.log
+.env
+.env.*
+!.env.example
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp
