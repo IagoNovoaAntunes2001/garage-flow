@@ -56,3 +56,17 @@ dependencies {
 tasks.named('test') {
 	useJUnitPlatform()
 }
+
+kover {
+	reports {
+		verify {
+			rule {
+				bound {
+					minValue = 80
+					coverageUnits = kotlinx.kover.gradle.plugin.dsl.CoverageUnit.LINE
+					aggregationForGroup = kotlinx.kover.gradle.plugin.dsl.AggregationType.COVERED_PERCENTAGE
+				}
+			}
+		}
+	}
+}

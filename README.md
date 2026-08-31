@@ -43,5 +43,76 @@ and finally `release/1.0.0`.
 - Gradle and Kover
 - Docker and Docker Compose in the operational roadmap
 
-The complete setup, architecture, API, security, Docker, testing, coverage, and delivery instructions will
-continue to be expanded as their corresponding verified roadmap tasks are completed.
+## Business scope
+
+The backend manages customers, vehicles, catalog services, inventory parts/supplies, ServiceOrders,
+quotations, customer approvals, restricted tracking, and execution-time metrics. Phase 1 excludes frontend,
+mobile, payment, scheduling, microservices, brokers, Kubernetes, and cloud infrastructure.
+
+## Architecture
+
+The application is a Kotlin/JVM 17 Spring Boot modular monolith. Packages are organized by business
+capability and layered into domain, application, infrastructure, and api responsibilities. Domain code does
+not depend on Spring MVC, Spring Security, JWT, JPA, PostgreSQL, Swagger, or Docker.
+
+PostgreSQL is used because the MVP has strongly related transactional data across Customers, Vehicles,
+Services, Parts/Supplies, Inventory, ServiceOrders, Quotations, Approvals, and lifecycle history. Flyway is
+the schema source of truth and Hibernate validates the schema.
+
+## Local execution
+
+Required environment variables:
+
+```sh
+DATABASE_URL=jdbc:postgresql://localhost:5432/garage_flow
+DATABASE_USERNAME=garage_flow
+DATABASE_PASSWORD=garage_flow
+JWT_SECRET=change-me-to-at-least-32-characters
+ADMIN_BOOTSTRAP_ENABLED=true
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=change-me-admin-password
+```
+
+Run tests:
+
+```sh
+./gradlew clean test
+./gradlew build
+```
+
+Run with Docker Compose:
+
+```sh
+cp .env.example .env
+docker compose up --build
+```
+
+Swagger UI is available in the `local` profile at `/swagger-ui.html`. Health is available at
+`/actuator/health`.
+
+## Authentication
+
+Administrative endpoints under `/api/v1/admin/**` require a Bearer JWT from `POST /api/v1/auth/token`.
+Customer approval and tracking endpoints use the `X-Service-Order-Token` header and expose only restricted
+ServiceOrder information.
+
+## ServiceOrder lifecycle
+
+`RECEIVED -> IN_DIAGNOSIS -> AWAITING_APPROVAL -> IN_EXECUTION -> FINISHED -> DELIVERED`.
+
+Additional repairs can move an executing order back to `AWAITING_APPROVAL` and require a new customer
+approval before execution resumes.
+
+## Documentation
+
+- [Architecture](docs/architecture/architecture-overview.md)
+- [System Context](docs/architecture/system-context.md)
+- [Modular Monolith](docs/architecture/modular-monolith.md)
+- [ServiceOrder Lifecycle](docs/architecture/service-order-lifecycle.md)
+- [Ubiquitous Language](docs/ddd/ubiquitous-language.md)
+- [Aggregates](docs/ddd/aggregates.md)
+- [Domain Model](docs/ddd/domain-model.md)
+- [ServiceOrder Event Storming](docs/ddd/event-storming-service-order.md)
+- [Inventory Event Storming](docs/ddd/event-storming-inventory.md)
+- [Vulnerability Report](docs/security/vulnerability-report.md)
+- [Submission Checklist](docs/submission/checklist.md)
