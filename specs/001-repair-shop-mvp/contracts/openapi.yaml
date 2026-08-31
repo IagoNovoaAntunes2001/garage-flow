@@ -1,0 +1,647 @@
+openapi: 3.0.3
+info:
+  title: Automotive Repair Shop MVP API
+  version: 1.0.0
+  description: Planning contract for the Phase 1 backend. Runtime OpenAPI must remain compatible.
+servers:
+  - url: /api/v1
+tags:
+  - name: Authentication
+  - name: Customers
+  - name: Vehicles
+  - name: Services
+  - name: Inventory
+  - name: Service Orders
+  - name: Customer Access
+  - name: Metrics
+security:
+  - bearerAuth: []
+paths:
+  /auth/token:
+    post:
+      tags: [Authentication]
+      security: []
+      operationId: issueAdminToken
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/LoginRequest' }
+      responses:
+        '200':
+          description: Access token issued
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/TokenResponse' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+  /admin/customers:
+    get:
+      tags: [Customers]
+      operationId: listCustomers
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Size' }
+        - { name: document, in: query, schema: { type: string }, description: Normalized or formatted CPF/CNPJ }
+      responses:
+        '200':
+          description: Customer page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CustomerPage' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+    post:
+      tags: [Customers]
+      operationId: createCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CustomerWrite' }
+      responses:
+        '201':
+          description: Customer created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Customer' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /admin/customers/{customerId}:
+    parameters:
+      - { $ref: '#/components/parameters/CustomerId' }
+    get:
+      tags: [Customers]
+      operationId: getCustomer
+      responses:
+        '200':
+          description: Customer details
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Customer' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Customers]
+      operationId: updateCustomer
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CustomerUpdate' }
+      responses:
+        '200':
+          description: Customer updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Customer' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    delete:
+      tags: [Customers]
+      operationId: removeCustomer
+      responses:
+        '204': { description: Removed or deactivated }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/customers/{customerId}/vehicles:
+    parameters:
+      - { $ref: '#/components/parameters/CustomerId' }
+    get:
+      tags: [Vehicles]
+      operationId: listCustomerVehicles
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Size' }
+      responses:
+        '200':
+          description: Vehicle page for customer
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VehiclePage' }
+    post:
+      tags: [Vehicles]
+      operationId: createVehicle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VehicleWrite' }
+      responses:
+        '201':
+          description: Vehicle created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /admin/vehicles:
+    get:
+      tags: [Vehicles]
+      operationId: listVehicles
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Size' }
+        - { name: licensePlate, in: query, schema: { type: string } }
+      responses:
+        '200':
+          description: Vehicle page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/VehiclePage' }
+  /admin/vehicles/{vehicleId}:
+    parameters:
+      - { $ref: '#/components/parameters/VehicleId' }
+    get:
+      tags: [Vehicles]
+      operationId: getVehicle
+      responses:
+        '200':
+          description: Vehicle details
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Vehicles]
+      operationId: updateVehicle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/VehicleWrite' }
+      responses:
+        '200':
+          description: Vehicle updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Vehicle' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    delete:
+      tags: [Vehicles]
+      operationId: removeVehicle
+      responses:
+        '204': { description: Removed or deactivated }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/services:
+    get:
+      tags: [Services]
+      operationId: listCatalogServices
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Size' }
+      responses:
+        '200':
+          description: Service page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogServicePage' }
+    post:
+      tags: [Services]
+      operationId: createCatalogService
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CatalogServiceWrite' }
+      responses:
+        '201':
+          description: Service created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogService' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /admin/services/{serviceId}:
+    parameters:
+      - { $ref: '#/components/parameters/ServiceId' }
+    get:
+      tags: [Services]
+      operationId: getCatalogService
+      responses:
+        '200':
+          description: Service details
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogService' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Services]
+      operationId: updateCatalogService
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CatalogServiceWrite' }
+      responses:
+        '200':
+          description: Service updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CatalogService' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    delete:
+      tags: [Services]
+      operationId: removeCatalogService
+      responses:
+        '204': { description: Removed or deactivated }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/inventory-items:
+    get:
+      tags: [Inventory]
+      operationId: listInventoryItems
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Size' }
+        - { name: type, in: query, schema: { $ref: '#/components/schemas/InventoryItemType' } }
+      responses:
+        '200':
+          description: Inventory page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryItemPage' }
+    post:
+      tags: [Inventory]
+      operationId: createInventoryItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InventoryItemWrite' }
+      responses:
+        '201':
+          description: Inventory item created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryItem' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409': { $ref: '#/components/responses/Conflict' }
+  /admin/inventory-items/{inventoryItemId}:
+    parameters:
+      - { $ref: '#/components/parameters/InventoryItemId' }
+    get:
+      tags: [Inventory]
+      operationId: getInventoryItem
+      responses:
+        '200':
+          description: Inventory item details
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryItem' }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      tags: [Inventory]
+      operationId: updateInventoryItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InventoryItemUpdate' }
+      responses:
+        '200':
+          description: Inventory item updated
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryItem' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+    delete:
+      tags: [Inventory]
+      operationId: removeInventoryItem
+      responses:
+        '204': { description: Removed or deactivated }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/inventory-items/{inventoryItemId}/adjustments:
+    parameters:
+      - { $ref: '#/components/parameters/InventoryItemId' }
+    post:
+      tags: [Inventory]
+      operationId: adjustInventory
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/InventoryAdjustment' }
+      responses:
+        '200':
+          description: Stock adjusted
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/InventoryItem' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+  /admin/service-orders:
+    get:
+      tags: [Service Orders]
+      operationId: listServiceOrders
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Size' }
+        - { name: status, in: query, schema: { $ref: '#/components/schemas/ServiceOrderStatus' } }
+      responses:
+        '200':
+          description: Service order page
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceOrderPage' }
+    post:
+      tags: [Service Orders]
+      operationId: createServiceOrder
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/CreateServiceOrderRequest' }
+      responses:
+        '201':
+          description: Service order created; tracking token is returned only here
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CreateServiceOrderResponse' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '422': { $ref: '#/components/responses/Unprocessable' }
+  /admin/service-orders/{serviceOrderId}:
+    parameters:
+      - { $ref: '#/components/parameters/ServiceOrderId' }
+    get:
+      tags: [Service Orders]
+      operationId: getServiceOrder
+      responses:
+        '200':
+          description: Complete administrative order details
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceOrderDetail' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/service-orders/{serviceOrderId}/diagnosis/start:
+    post:
+      tags: [Service Orders]
+      operationId: startDiagnosis
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+      responses: { '200': { $ref: '#/components/responses/OrderAction' }, '409': { $ref: '#/components/responses/Conflict' } }
+  /admin/service-orders/{serviceOrderId}/quotation/request-approval:
+    post:
+      tags: [Service Orders]
+      operationId: generateQuotationAndRequestApproval
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RepairItemsRequest' }
+      responses: { '200': { $ref: '#/components/responses/OrderAction' }, '409': { $ref: '#/components/responses/Conflict' }, '422': { $ref: '#/components/responses/Unprocessable' } }
+  /admin/service-orders/{serviceOrderId}/additional-repairs:
+    post:
+      tags: [Service Orders]
+      operationId: addAdditionalRepairs
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/RepairItemsRequest' }
+      responses: { '200': { $ref: '#/components/responses/OrderAction' }, '409': { $ref: '#/components/responses/Conflict' }, '422': { $ref: '#/components/responses/Unprocessable' } }
+  /admin/service-orders/{serviceOrderId}/execution/start:
+    post:
+      tags: [Service Orders]
+      operationId: startOrResumeExecution
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+      responses: { '200': { $ref: '#/components/responses/OrderAction' }, '409': { $ref: '#/components/responses/Conflict' }, '422': { $ref: '#/components/responses/Unprocessable' } }
+  /admin/service-orders/{serviceOrderId}/finish:
+    post:
+      tags: [Service Orders]
+      operationId: finishServiceOrder
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+      responses: { '200': { $ref: '#/components/responses/OrderAction' }, '409': { $ref: '#/components/responses/Conflict' } }
+  /admin/service-orders/{serviceOrderId}/delivery:
+    post:
+      tags: [Service Orders]
+      operationId: deliverVehicle
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+      responses: { '200': { $ref: '#/components/responses/OrderAction' }, '409': { $ref: '#/components/responses/Conflict' } }
+  /customer-approvals/{serviceOrderId}/approve:
+    post:
+      tags: [Customer Access]
+      operationId: approveQuotation
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+        - { $ref: '#/components/parameters/TrackingToken' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApprovalRequest' }
+      responses: { '200': { $ref: '#/components/responses/CustomerOrder' }, '404': { $ref: '#/components/responses/NotFound' }, '409': { $ref: '#/components/responses/Conflict' } }
+  /customer-approvals/{serviceOrderId}/reject:
+    post:
+      tags: [Customer Access]
+      operationId: rejectQuotation
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+        - { $ref: '#/components/parameters/TrackingToken' }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ApprovalRequest' }
+      responses: { '200': { $ref: '#/components/responses/CustomerOrder' }, '404': { $ref: '#/components/responses/NotFound' }, '409': { $ref: '#/components/responses/Conflict' } }
+  /tracking/service-orders/{serviceOrderId}:
+    get:
+      tags: [Customer Access]
+      operationId: trackServiceOrder
+      security: []
+      parameters:
+        - { $ref: '#/components/parameters/ServiceOrderId' }
+        - { $ref: '#/components/parameters/TrackingToken' }
+      responses:
+        '200':
+          description: Restricted customer tracking view
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/CustomerTracking' }
+        '404': { $ref: '#/components/responses/NotFound' }
+  /admin/metrics/execution-time:
+    get:
+      tags: [Metrics]
+      operationId: getAverageExecutionTime
+      parameters:
+        - { name: from, in: query, required: true, schema: { type: string, format: date-time } }
+        - { name: to, in: query, required: true, schema: { type: string, format: date-time } }
+      responses:
+        '200':
+          description: Derived active execution-time summary
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ExecutionTimeSummary' }
+        '400': { $ref: '#/components/responses/BadRequest' }
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+  parameters:
+    Page: { name: page, in: query, schema: { type: integer, minimum: 0, default: 0 } }
+    Size: { name: size, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 20 } }
+    CustomerId: { name: customerId, in: path, required: true, schema: { type: string, format: uuid } }
+    VehicleId: { name: vehicleId, in: path, required: true, schema: { type: string, format: uuid } }
+    ServiceId: { name: serviceId, in: path, required: true, schema: { type: string, format: uuid } }
+    InventoryItemId: { name: inventoryItemId, in: path, required: true, schema: { type: string, format: uuid } }
+    ServiceOrderId: { name: serviceOrderId, in: path, required: true, schema: { type: string, format: uuid } }
+    TrackingToken:
+      name: X-Service-Order-Token
+      in: header
+      required: true
+      schema: { type: string, minLength: 43 }
+  responses:
+    BadRequest: { description: Malformed or invalid input, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+    Unauthorized: { description: Missing or invalid administrator credentials, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+    NotFound: { description: Resource not found or customer access concealed, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+    Conflict: { description: Uniqueness, state, stale version, or concurrency conflict, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+    Unprocessable: { description: Business precondition failed, content: { application/json: { schema: { $ref: '#/components/schemas/ApiError' } } } }
+    OrderAction: { description: Updated administrative order view, content: { application/json: { schema: { $ref: '#/components/schemas/ServiceOrderDetail' } } } }
+    CustomerOrder: { description: Restricted customer order view, content: { application/json: { schema: { $ref: '#/components/schemas/CustomerTracking' } } } }
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties: { username: { type: string }, password: { type: string, format: password } }
+    TokenResponse:
+      type: object
+      required: [accessToken, tokenType, expiresIn]
+      properties: { accessToken: { type: string }, tokenType: { type: string, example: Bearer }, expiresIn: { type: integer, format: int64 } }
+    Money:
+      type: object
+      required: [amount, currency]
+      properties: { amount: { type: string, pattern: '^\d+\.\d{2}$' }, currency: { type: string, enum: [BRL] } }
+    CustomerWrite:
+      type: object
+      required: [document, name]
+      properties: { document: { type: string }, name: { type: string, minLength: 2, maxLength: 150 }, email: { type: string, format: email }, phone: { type: string, maxLength: 30 } }
+    CustomerUpdate:
+      type: object
+      required: [name]
+      properties: { name: { type: string, minLength: 2, maxLength: 150 }, email: { type: string, format: email }, phone: { type: string, maxLength: 30 }, active: { type: boolean } }
+    Customer:
+      allOf:
+        - { $ref: '#/components/schemas/CustomerWrite' }
+        - type: object
+          required: [id, active, createdAt, updatedAt]
+          properties: { id: { type: string, format: uuid }, active: { type: boolean }, createdAt: { type: string, format: date-time }, updatedAt: { type: string, format: date-time } }
+    VehicleWrite:
+      type: object
+      required: [licensePlate, brand, model, year]
+      properties: { licensePlate: { type: string }, brand: { type: string, maxLength: 80 }, model: { type: string, maxLength: 100 }, year: { type: integer } }
+    Vehicle:
+      allOf:
+        - { $ref: '#/components/schemas/VehicleWrite' }
+        - type: object
+          required: [id, customerId, active]
+          properties: { id: { type: string, format: uuid }, customerId: { type: string, format: uuid }, active: { type: boolean } }
+    CatalogServiceWrite:
+      type: object
+      required: [name, description, price]
+      properties: { name: { type: string, maxLength: 120 }, description: { type: string, maxLength: 1000 }, price: { $ref: '#/components/schemas/Money' } }
+    CatalogService:
+      allOf:
+        - { $ref: '#/components/schemas/CatalogServiceWrite' }
+        - type: object
+          required: [id, active]
+          properties: { id: { type: string, format: uuid }, active: { type: boolean } }
+    InventoryItemType: { type: string, enum: [PART, SUPPLY] }
+    InventoryItemWrite:
+      type: object
+      required: [type, name, description, unitPrice, initialQuantity]
+      properties: { type: { $ref: '#/components/schemas/InventoryItemType' }, name: { type: string, maxLength: 120 }, description: { type: string, maxLength: 1000 }, unitPrice: { $ref: '#/components/schemas/Money' }, initialQuantity: { type: integer, format: int64, minimum: 0 } }
+    InventoryItemUpdate:
+      type: object
+      required: [name, description, unitPrice, active]
+      properties: { name: { type: string }, description: { type: string }, unitPrice: { $ref: '#/components/schemas/Money' }, active: { type: boolean } }
+    InventoryItem:
+      type: object
+      required: [id, type, name, description, unitPrice, availableQuantity, active]
+      properties: { id: { type: string, format: uuid }, type: { $ref: '#/components/schemas/InventoryItemType' }, name: { type: string }, description: { type: string }, unitPrice: { $ref: '#/components/schemas/Money' }, availableQuantity: { type: integer, format: int64 }, active: { type: boolean } }
+    InventoryAdjustment:
+      type: object
+      required: [operation, quantity, reason]
+      properties: { operation: { type: string, enum: [ADD, REMOVE, RETURN] }, quantity: { type: integer, format: int64, minimum: 1 }, reason: { type: string, maxLength: 500 } }
+    RepairItemInput:
+      type: object
+      required: [type, referenceId, quantity]
+      properties: { type: { type: string, enum: [SERVICE, PART, SUPPLY] }, referenceId: { type: string, format: uuid }, quantity: { type: integer, format: int64, minimum: 1 } }
+    RepairItemsRequest:
+      type: object
+      required: [items]
+      properties: { items: { type: array, minItems: 1, items: { $ref: '#/components/schemas/RepairItemInput' } } }
+    CreateServiceOrderRequest:
+      type: object
+      required: [customerDocument, vehicleId, items]
+      properties: { customerDocument: { type: string }, vehicleId: { type: string, format: uuid }, items: { type: array, minItems: 1, items: { $ref: '#/components/schemas/RepairItemInput' } } }
+    CreateServiceOrderResponse:
+      type: object
+      required: [serviceOrder, trackingToken]
+      properties: { serviceOrder: { $ref: '#/components/schemas/ServiceOrderDetail' }, trackingToken: { type: string, description: Returned only once } }
+    ServiceOrderStatus: { type: string, enum: [RECEIVED, IN_DIAGNOSIS, AWAITING_APPROVAL, IN_EXECUTION, FINISHED, DELIVERED] }
+    ApprovalRequest:
+      type: object
+      required: [quotationVersion]
+      properties: { quotationVersion: { type: integer, minimum: 1 }, reason: { type: string, maxLength: 500 } }
+    ServiceOrderDetail:
+      type: object
+      required: [id, customer, vehicle, status, currentQuotation, quotations, approvals, statusHistory, createdAt]
+      properties:
+        id: { type: string, format: uuid }
+        customer: { type: object, additionalProperties: true }
+        vehicle: { type: object, additionalProperties: true }
+        status: { $ref: '#/components/schemas/ServiceOrderStatus' }
+        currentQuotation: { type: object, additionalProperties: true }
+        quotations: { type: array, items: { type: object, additionalProperties: true } }
+        approvals: { type: array, items: { type: object, additionalProperties: true } }
+        statusHistory: { type: array, items: { type: object, additionalProperties: true } }
+        createdAt: { type: string, format: date-time }
+    CustomerTracking:
+      type: object
+      required: [serviceOrderId, status, progress, lastUpdatedAt]
+      properties: { serviceOrderId: { type: string, format: uuid }, status: { $ref: '#/components/schemas/ServiceOrderStatus' }, progress: { type: string }, currentQuotation: { type: object, additionalProperties: true }, lastUpdatedAt: { type: string, format: date-time } }
+    ExecutionTimeSummary:
+      type: object
+      required: [from, to, orderCount]
+      properties: { from: { type: string, format: date-time }, to: { type: string, format: date-time }, orderCount: { type: integer, minimum: 0 }, averageExecutionSeconds: { type: number, format: double, nullable: true } }
+    PageMetadata:
+      type: object
+      required: [page, size, totalElements, totalPages]
+      properties: { page: { type: integer }, size: { type: integer }, totalElements: { type: integer, format: int64 }, totalPages: { type: integer } }
+    CustomerPage: { allOf: [ { $ref: '#/components/schemas/PageMetadata' }, { type: object, properties: { content: { type: array, items: { $ref: '#/components/schemas/Customer' } } } } ] }
+    VehiclePage: { allOf: [ { $ref: '#/components/schemas/PageMetadata' }, { type: object, properties: { content: { type: array, items: { $ref: '#/components/schemas/Vehicle' } } } } ] }
+    CatalogServicePage: { allOf: [ { $ref: '#/components/schemas/PageMetadata' }, { type: object, properties: { content: { type: array, items: { $ref: '#/components/schemas/CatalogService' } } } } ] }
+    InventoryItemPage: { allOf: [ { $ref: '#/components/schemas/PageMetadata' }, { type: object, properties: { content: { type: array, items: { $ref: '#/components/schemas/InventoryItem' } } } } ] }
+    ServiceOrderPage: { allOf: [ { $ref: '#/components/schemas/PageMetadata' }, { type: object, properties: { content: { type: array, items: { $ref: '#/components/schemas/ServiceOrderDetail' } } } } ] }
+    FieldViolation:
+      type: object
+      required: [field, message]
+      properties: { field: { type: string }, message: { type: string } }
+    ApiError:
+      type: object
+      required: [timestamp, status, error, code, message, path, correlationId]
+      properties:
+        timestamp: { type: string, format: date-time }
+        status: { type: integer }
+        error: { type: string }
+        code: { type: string }
+        message: { type: string }
+        path: { type: string }
+        correlationId: { type: string }
+        violations: { type: array, items: { $ref: '#/components/schemas/FieldViolation' } }
