@@ -107,14 +107,14 @@ are rejected.
 
 **Recommended branch**: `feature/customer-management`
 
-- [ ] T036 [P] [US1] Write Customer aggregate creation, update, and deactivation tests in `src/test/kotlin/com/example/techchallenge/customer/domain/CustomerTest.kt`
-- [ ] T037 [P] [US1] Write customer CRUD, document lookup, uniqueness, and referenced-removal integration tests in `src/test/kotlin/com/example/techchallenge/customer/api/CustomerApiIntegrationTest.kt`
-- [ ] T038 [P] [US1] Implement Customer aggregate and invariants in `src/main/kotlin/com/example/techchallenge/customer/domain/model/Customer.kt`
-- [ ] T039 [P] [US1] Define Customer repository contract in `src/main/kotlin/com/example/techchallenge/customer/domain/repository/CustomerRepository.kt`
-- [ ] T040 [US1] Implement Customer JPA entity, mapper, Spring Data repository, and adapter in `src/main/kotlin/com/example/techchallenge/customer/infrastructure/persistence/CustomerPersistenceAdapter.kt`
-- [ ] T041 [US1] Implement create, get, find-by-document, update, list, and remove Customer use cases in `src/main/kotlin/com/example/techchallenge/customer/application/usecase/CustomerUseCases.kt`
-- [ ] T042 [US1] Implement Customer request/response DTOs and explicit mappings in `src/main/kotlin/com/example/techchallenge/customer/api/CustomerDtos.kt`
-- [ ] T043 [US1] Implement secured Customer REST operations from the planning contract in `src/main/kotlin/com/example/techchallenge/customer/api/controller/CustomerController.kt`
+- [X] T036 [P] [US1] Write Customer aggregate creation, update, and deactivation tests in `src/test/kotlin/com/example/techchallenge/customer/domain/CustomerTest.kt`
+- [X] T037 [P] [US1] Write customer CRUD, document lookup, uniqueness, and referenced-removal integration tests in `src/test/kotlin/com/example/techchallenge/customer/api/CustomerApiIntegrationTest.kt`
+- [X] T038 [P] [US1] Implement Customer aggregate and invariants in `src/main/kotlin/com/example/techchallenge/customer/domain/model/Customer.kt`
+- [X] T039 [P] [US1] Define Customer repository contract in `src/main/kotlin/com/example/techchallenge/customer/domain/repository/CustomerRepository.kt`
+- [X] T040 [US1] Implement Customer JPA entity, mapper, Spring Data repository, and adapter in `src/main/kotlin/com/example/techchallenge/customer/infrastructure/persistence/CustomerPersistenceAdapter.kt`
+- [X] T041 [US1] Implement create, get, find-by-document, update, list, and remove Customer use cases in `src/main/kotlin/com/example/techchallenge/customer/application/usecase/CustomerUseCases.kt`
+- [X] T042 [US1] Implement Customer request/response DTOs and explicit mappings in `src/main/kotlin/com/example/techchallenge/customer/api/CustomerDtos.kt`
+- [X] T043 [US1] Implement secured Customer REST operations from the planning contract in `src/main/kotlin/com/example/techchallenge/customer/api/controller/CustomerController.kt`
 
 ### Vehicle Capability
 
