@@ -81,7 +81,7 @@ class GlobalExceptionHandler {
     ): ResponseEntity<ApiError> = response(
         HttpStatus.UNAUTHORIZED,
         "UNAUTHORIZED",
-        "Authentication is required",
+        exception.message ?: "Authentication is required",
         request,
     )
 
