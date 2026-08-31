@@ -350,8 +350,8 @@ and verify the average, count, interval boundaries, and empty-result semantics.
 **Recommended branch**: `docs/security-analysis`
 
 - [X] T137 Document Trivy filesystem/image commands, target, scan date, findings, severity, analysis, and remediation format in `docs/security/vulnerability-report.md`
-- [ ] T138 Run Trivy against the repository and final image and record actual unsuppressed findings in `docs/security/vulnerability-report.md`
-- [ ] T139 Resolve critical findings in the owning files or document accepted non-critical risks with accountable remediation in `docs/security/vulnerability-report.md`
+- [X] T138 Run Trivy against the repository and final image and record actual unsuppressed findings in `docs/security/vulnerability-report.md`
+- [X] T139 Resolve critical findings in the owning files or document accepted non-critical risks with accountable remediation in `docs/security/vulnerability-report.md`
 - [X] T140 Verify logs and API errors contain no passwords, JWTs, tracking tokens, secrets, full CPF/CNPJ values, or stack traces in `src/test/kotlin/com/example/techchallenge/security/SensitiveDataExposureIntegrationTest.kt`
 
 ### README and Submission

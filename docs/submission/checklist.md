@@ -26,7 +26,7 @@
 - [x] DDD diagrams
 - [x] Ubiquitous Language
 - [x] Vulnerability analysis report template
-- [ ] Vulnerability scan executed with final local tool output
+- [x] Vulnerability scan executed with final local tool output
 - [ ] Group name:
 - [ ] Participant names:
 - [ ] Discord usernames:
@@ -53,5 +53,6 @@ Date: 2026-08-31.
 - Backend logs confirmed Flyway applied V1 from an empty schema and Hibernate validation completed.
 - `docker compose down`: PASS.
 
-Security scan note: `trivy` was not installed in this environment, so actual vulnerability findings remain
-pending and must not be fabricated.
+Security scan note: Trivy was executed through Docker. The final filesystem scan has no findings. The final
+image scan has 0 HIGH and 0 CRITICAL findings; remaining LOW/MEDIUM findings are documented in
+`docs/security/vulnerability-report.md`.
