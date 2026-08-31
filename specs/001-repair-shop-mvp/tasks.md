@@ -79,15 +79,15 @@ all user stories.
 
 **Recommended branch**: `feature/authentication`
 
-- [ ] T027 [P] Write password verification, token expiry, issuer, and authority tests in `src/test/kotlin/com/example/techchallenge/authentication/application/AuthenticationServiceTest.kt`
-- [ ] T028 [P] Write token endpoint and protected-route security tests in `src/test/kotlin/com/example/techchallenge/authentication/api/AuthenticationIntegrationTest.kt`
-- [ ] T029 Implement Administrator model and repository port in `src/main/kotlin/com/example/techchallenge/authentication/application/Administrator.kt`
-- [ ] T030 Implement Administrator JPA entity, Spring Data repository, and adapter in `src/main/kotlin/com/example/techchallenge/authentication/infrastructure/persistence/AdministratorPersistenceAdapter.kt`
-- [ ] T031 Implement BCrypt credential verification and environment bootstrap in `src/main/kotlin/com/example/techchallenge/authentication/application/AuthenticationService.kt`
-- [ ] T032 Implement JWT encoding/decoding and externally configured secret validation in `src/main/kotlin/com/example/techchallenge/authentication/infrastructure/security/JwtService.kt`
-- [ ] T033 Implement stateless security rules, ROLE_ADMIN protection, and JSON authentication failures in `src/main/kotlin/com/example/techchallenge/authentication/infrastructure/security/SecurityConfiguration.kt`
-- [ ] T034 Implement the administrator token request/response and endpoint in `src/main/kotlin/com/example/techchallenge/authentication/api/AuthenticationController.kt`
-- [ ] T035 Run authentication integration tests and verify every `/api/v1/admin/**` route is denied without a valid administrator JWT in `src/test/kotlin/com/example/techchallenge/authentication/api/AdminRouteSecurityIntegrationTest.kt`
+- [X] T027 [P] Write password verification, token expiry, issuer, and authority tests in `src/test/kotlin/com/example/techchallenge/authentication/application/AuthenticationServiceTest.kt`
+- [X] T028 [P] Write token endpoint and protected-route security tests in `src/test/kotlin/com/example/techchallenge/authentication/api/AuthenticationIntegrationTest.kt`
+- [X] T029 Implement Administrator model and repository port in `src/main/kotlin/com/example/techchallenge/authentication/application/Administrator.kt`
+- [X] T030 Implement Administrator JPA entity, Spring Data repository, and adapter in `src/main/kotlin/com/example/techchallenge/authentication/infrastructure/persistence/AdministratorPersistenceAdapter.kt`
+- [X] T031 Implement BCrypt credential verification and environment bootstrap in `src/main/kotlin/com/example/techchallenge/authentication/application/AuthenticationService.kt`
+- [X] T032 Implement JWT encoding/decoding and externally configured secret validation in `src/main/kotlin/com/example/techchallenge/authentication/infrastructure/security/JwtService.kt`
+- [X] T033 Implement stateless security rules, ROLE_ADMIN protection, and JSON authentication failures in `src/main/kotlin/com/example/techchallenge/authentication/infrastructure/security/SecurityConfiguration.kt`
+- [X] T034 Implement the administrator token request/response and endpoint in `src/main/kotlin/com/example/techchallenge/authentication/api/AuthenticationController.kt`
+- [X] T035 Run authentication integration tests and verify every `/api/v1/admin/**` route is denied without a valid administrator JWT in `src/test/kotlin/com/example/techchallenge/authentication/api/AdminRouteSecurityIntegrationTest.kt`
 
 **Checkpoint**: The Kotlin application starts against migrated PostgreSQL, shared value objects enforce core
 validation, errors are consistent, and administrative routes have working JWT security.
