@@ -99,7 +99,7 @@ CREATE TABLE service_orders (
     vehicle_model VARCHAR(100) NOT NULL,
     vehicle_year INTEGER NOT NULL,
     status VARCHAR(20) NOT NULL,
-    tracking_token_hash CHAR(64) NOT NULL,
+    tracking_token_hash VARCHAR(64) NOT NULL,
     tracking_expires_at TIMESTAMPTZ,
     tracking_revoked_at TIMESTAMPTZ,
     created_at TIMESTAMPTZ NOT NULL,

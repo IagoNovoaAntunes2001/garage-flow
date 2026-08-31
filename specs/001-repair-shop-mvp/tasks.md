@@ -132,25 +132,25 @@ are rejected.
 
 **Recommended branch**: `feature/service-catalog`
 
-- [ ] T051 [P] [US1] Write CatalogService price, update, activity, and snapshot-safety tests in `src/test/kotlin/com/example/techchallenge/catalog/domain/CatalogServiceTest.kt`
-- [ ] T052 [P] [US1] Write service CRUD, uniqueness, pagination, and validation integration tests in `src/test/kotlin/com/example/techchallenge/catalog/api/CatalogServiceApiIntegrationTest.kt`
-- [ ] T053 [P] [US1] Implement CatalogService aggregate and repository contract in `src/main/kotlin/com/example/techchallenge/catalog/domain/model/CatalogService.kt`
-- [ ] T054 [US1] Implement CatalogService JPA mapping, repository, and adapter in `src/main/kotlin/com/example/techchallenge/catalog/infrastructure/persistence/CatalogServicePersistenceAdapter.kt`
-- [ ] T055 [US1] Implement service catalog CRUD/list use cases in `src/main/kotlin/com/example/techchallenge/catalog/application/usecase/CatalogServiceUseCases.kt`
-- [ ] T056 [US1] Implement service catalog DTOs and secured REST operations in `src/main/kotlin/com/example/techchallenge/catalog/api/controller/CatalogServiceController.kt`
+- [X] T051 [P] [US1] Write CatalogService price, update, activity, and snapshot-safety tests in `src/test/kotlin/com/example/techchallenge/catalog/domain/CatalogServiceTest.kt`
+- [X] T052 [P] [US1] Write service CRUD, uniqueness, pagination, and validation integration tests in `src/test/kotlin/com/example/techchallenge/catalog/api/CatalogServiceApiIntegrationTest.kt`
+- [X] T053 [P] [US1] Implement CatalogService aggregate and repository contract in `src/main/kotlin/com/example/techchallenge/catalog/domain/model/CatalogService.kt`
+- [X] T054 [US1] Implement CatalogService JPA mapping, repository, and adapter in `src/main/kotlin/com/example/techchallenge/catalog/infrastructure/persistence/CatalogServicePersistenceAdapter.kt`
+- [X] T055 [US1] Implement service catalog CRUD/list use cases in `src/main/kotlin/com/example/techchallenge/catalog/application/usecase/CatalogServiceUseCases.kt`
+- [X] T056 [US1] Implement service catalog DTOs and secured REST operations in `src/main/kotlin/com/example/techchallenge/catalog/api/controller/CatalogServiceController.kt`
 
 ### Inventory Capability
 
 **Recommended branch**: `feature/inventory-management`
 
-- [ ] T057 [P] [US1] Write InventoryItem non-negative stock, adjustment, and movement tests in `src/test/kotlin/com/example/techchallenge/inventory/domain/InventoryItemTest.kt`
-- [ ] T058 [P] [US1] Write Part/Supply CRUD, stock adjustment, pagination, and insufficient-stock API tests in `src/test/kotlin/com/example/techchallenge/inventory/api/InventoryApiIntegrationTest.kt`
-- [ ] T059 [P] [US1] Implement Part/Supply InventoryItem aggregate and InventoryMovement rules in `src/main/kotlin/com/example/techchallenge/inventory/domain/model/InventoryItem.kt`
-- [ ] T060 [P] [US1] Define Inventory repository and ordered-lock contracts in `src/main/kotlin/com/example/techchallenge/inventory/domain/repository/InventoryRepository.kt`
-- [ ] T061 [US1] Implement InventoryItem and movement JPA mappings with ordered pessimistic-lock query in `src/main/kotlin/com/example/techchallenge/inventory/infrastructure/persistence/InventoryPersistenceAdapter.kt`
-- [ ] T062 [US1] Implement inventory CRUD, list, add/remove/return stock, and reference-aware removal use cases in `src/main/kotlin/com/example/techchallenge/inventory/application/usecase/InventoryUseCases.kt`
-- [ ] T063 [US1] Implement inventory DTOs and secured item/adjustment REST operations in `src/main/kotlin/com/example/techchallenge/inventory/api/controller/InventoryController.kt`
-- [ ] T064 [US1] Verify normalized uniqueness, reference-aware removal, page bounds, and complete US1 authenticated flow in `src/test/kotlin/com/example/techchallenge/records/RepairShopRecordsEndToEndTest.kt`
+- [X] T057 [P] [US1] Write InventoryItem non-negative stock, adjustment, and movement tests in `src/test/kotlin/com/example/techchallenge/inventory/domain/InventoryItemTest.kt`
+- [X] T058 [P] [US1] Write Part/Supply CRUD, stock adjustment, pagination, and insufficient-stock API tests in `src/test/kotlin/com/example/techchallenge/inventory/api/InventoryApiIntegrationTest.kt`
+- [X] T059 [P] [US1] Implement Part/Supply InventoryItem aggregate and InventoryMovement rules in `src/main/kotlin/com/example/techchallenge/inventory/domain/model/InventoryItem.kt`
+- [X] T060 [P] [US1] Define Inventory repository and ordered-lock contracts in `src/main/kotlin/com/example/techchallenge/inventory/domain/repository/InventoryRepository.kt`
+- [X] T061 [US1] Implement InventoryItem and movement JPA mappings with ordered pessimistic-lock query in `src/main/kotlin/com/example/techchallenge/inventory/infrastructure/persistence/InventoryPersistenceAdapter.kt`
+- [X] T062 [US1] Implement inventory CRUD, list, add/remove/return stock, and reference-aware removal use cases in `src/main/kotlin/com/example/techchallenge/inventory/application/usecase/InventoryUseCases.kt`
+- [X] T063 [US1] Implement inventory DTOs and secured item/adjustment REST operations in `src/main/kotlin/com/example/techchallenge/inventory/api/controller/InventoryController.kt`
+- [X] T064 [US1] Verify normalized uniqueness, reference-aware removal, page bounds, and complete US1 authenticated flow in `src/test/kotlin/com/example/techchallenge/records/RepairShopRecordsEndToEndTest.kt`
 
 **Checkpoint**: User Story 1 passes independently and supplies valid master data for service orders.
 
@@ -169,27 +169,27 @@ stale approval fails without partial state.
 
 **Recommended branch**: `feature/service-order`
 
-- [ ] T065 [P] [US2] Write ServiceOrder creation, ownership, required-service, snapshot, and initial-history tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/ServiceOrderCreationTest.kt`
-- [ ] T066 [P] [US2] Write exact quotation subtotal, total, versioning, and catalog-price isolation tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/QuotationTest.kt`
-- [ ] T067 [P] [US2] Implement ServiceOrder item, party snapshots, and immutable status-history models in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrderComponents.kt`
-- [ ] T068 [P] [US2] Implement immutable Quotation, QuotationLine, state, and exact calculation rules in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/Quotation.kt`
-- [ ] T069 [US2] Implement ServiceOrder aggregate creation and quotation generation behavior in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrder.kt`
-- [ ] T070 [P] [US2] Define ServiceOrder repository and capability lookup ports in `src/main/kotlin/com/example/techchallenge/serviceorder/application/port/ServiceOrderPorts.kt`
-- [ ] T071 [US2] Implement ServiceOrder, item, quotation, approval, and history JPA mappings and aggregate mapper in `src/main/kotlin/com/example/techchallenge/serviceorder/infrastructure/persistence/ServiceOrderPersistenceAdapter.kt`
-- [ ] T072 [US2] Implement transactional CreateServiceOrder with customer lookup, vehicle ownership, active-item lookup, price snapshots, and tracking-token hashing in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/CreateServiceOrder.kt`
-- [ ] T073 [US2] Implement StartDiagnosis and GenerateQuotation/RequestApproval use cases in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/PrepareQuotation.kt`
+- [X] T065 [P] [US2] Write ServiceOrder creation, ownership, required-service, snapshot, and initial-history tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/ServiceOrderCreationTest.kt`
+- [X] T066 [P] [US2] Write exact quotation subtotal, total, versioning, and catalog-price isolation tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/QuotationTest.kt`
+- [X] T067 [P] [US2] Implement ServiceOrder item, party snapshots, and immutable status-history models in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrderComponents.kt`
+- [X] T068 [P] [US2] Implement immutable Quotation, QuotationLine, state, and exact calculation rules in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/Quotation.kt`
+- [X] T069 [US2] Implement ServiceOrder aggregate creation and quotation generation behavior in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrder.kt`
+- [X] T070 [P] [US2] Define ServiceOrder repository and capability lookup ports in `src/main/kotlin/com/example/techchallenge/serviceorder/application/port/ServiceOrderPorts.kt`
+- [X] T071 [US2] Implement ServiceOrder, item, quotation, approval, and history JPA mappings and aggregate mapper in `src/main/kotlin/com/example/techchallenge/serviceorder/infrastructure/persistence/ServiceOrderPersistenceAdapter.kt`
+- [X] T072 [US2] Implement transactional CreateServiceOrder with customer lookup, vehicle ownership, active-item lookup, price snapshots, and tracking-token hashing in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/CreateServiceOrder.kt`
+- [X] T073 [US2] Implement StartDiagnosis and GenerateQuotation/RequestApproval use cases in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/PrepareQuotation.kt`
 
 ### Quotation Approval
 
 **Recommended branch**: `feature/quotation-approval`
 
-- [ ] T074 [P] [US2] Write approval, rejection, stale-version, revoked-token, and non-disclosure tests in `src/test/kotlin/com/example/techchallenge/serviceorder/application/QuotationApprovalTest.kt`
-- [ ] T075 [P] [US2] Implement Approval decision model bound to one quotation version in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/Approval.kt`
-- [ ] T076 [US2] Implement cryptographic tracking-token generation, SHA-256 hashing, expiry, and revocation adapter in `src/main/kotlin/com/example/techchallenge/serviceorder/infrastructure/security/CustomerAccessTokenService.kt`
-- [ ] T077 [US2] Implement customer ApproveQuotation and RejectQuotation use cases with concealed access failures in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/DecideQuotation.kt`
-- [ ] T078 [US2] Implement ServiceOrder creation, diagnosis, quotation-request, and restricted approval DTOs in `src/main/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderCommandDtos.kt`
-- [ ] T079 [US2] Implement secured creation/diagnosis/quotation endpoints and public approve/reject endpoints in `src/main/kotlin/com/example/techchallenge/serviceorder/api/controller/ServiceOrderCommandController.kt`
-- [ ] T080 [US2] Verify PostgreSQL rollback, historical snapshot persistence, current-version approval, and one-time token return in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderQuotationIntegrationTest.kt`
+- [X] T074 [P] [US2] Write approval, rejection, stale-version, revoked-token, and non-disclosure tests in `src/test/kotlin/com/example/techchallenge/serviceorder/application/QuotationApprovalTest.kt`
+- [X] T075 [P] [US2] Implement Approval decision model bound to one quotation version in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/Approval.kt`
+- [X] T076 [US2] Implement cryptographic tracking-token generation, SHA-256 hashing, expiry, and revocation adapter in `src/main/kotlin/com/example/techchallenge/serviceorder/infrastructure/security/CustomerAccessTokenService.kt`
+- [X] T077 [US2] Implement customer ApproveQuotation and RejectQuotation use cases with concealed access failures in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/DecideQuotation.kt`
+- [X] T078 [US2] Implement ServiceOrder creation, diagnosis, quotation-request, and restricted approval DTOs in `src/main/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderCommandDtos.kt`
+- [X] T079 [US2] Implement secured creation/diagnosis/quotation endpoints and public approve/reject endpoints in `src/main/kotlin/com/example/techchallenge/serviceorder/api/controller/ServiceOrderCommandController.kt`
+- [X] T080 [US2] Verify PostgreSQL rollback, historical snapshot persistence, current-version approval, and one-time token return in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderQuotationIntegrationTest.kt`
 
 **Checkpoint**: User Story 2 passes independently through AWAITING_APPROVAL with a recorded decision and
 immutable quotation history.
@@ -208,18 +208,18 @@ concurrent insufficient stock leave no partial effects.
 **Recommended branches**: `feature/service-order`, followed by `feature/quotation-approval` for the
 additional-repair approval increment.
 
-- [ ] T081 [P] [US3] Write every valid and invalid ServiceOrder transition test in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/ServiceOrderLifecycleTest.kt`
-- [ ] T082 [P] [US3] Write pending/rejected/stale approval execution-gate tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/ExecutionApprovalTest.kt`
-- [ ] T083 [P] [US3] Write additional-repair quotation supersession and resume tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/AdditionalRepairTest.kt`
-- [ ] T084 [P] [US3] Write insufficient/concurrent/idempotent inventory consumption tests in `src/test/kotlin/com/example/techchallenge/serviceorder/application/ExecutionInventoryIntegrationTest.kt`
-- [ ] T085 [US3] Implement exact ServiceOrderStatus transitions and named lifecycle operations in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrderLifecycle.kt`
-- [ ] T086 [US3] Implement additional-repair scope changes, quotation supersession, and approval reset in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrder.kt`
-- [ ] T087 [US3] Implement transactional ordered stock consumption and outstanding-quantity idempotency in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/StartExecution.kt`
-- [ ] T088 [P] [US3] Implement AddAdditionalRepairs and request-new-approval orchestration in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/AddAdditionalRepairs.kt`
-- [ ] T089 [P] [US3] Implement FinishServiceOrder and DeliverVehicle orchestration in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/CompleteServiceOrder.kt`
-- [ ] T090 [US3] Add additional-repair, execution, finish, and delivery business-action routes to `src/main/kotlin/com/example/techchallenge/serviceorder/api/controller/ServiceOrderCommandController.kt`
-- [ ] T091 [US3] Add safe structured lifecycle, approval, and inventory operation logging in `src/main/kotlin/com/example/techchallenge/serviceorder/application/ServiceOrderAuditLogger.kt`
-- [ ] T092 [US3] Verify the complete lifecycle, rollback, immutable Finished/Delivered history, and retry safety in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderLifecycleIntegrationTest.kt`
+- [X] T081 [P] [US3] Write every valid and invalid ServiceOrder transition test in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/ServiceOrderLifecycleTest.kt`
+- [X] T082 [P] [US3] Write pending/rejected/stale approval execution-gate tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/ExecutionApprovalTest.kt`
+- [X] T083 [P] [US3] Write additional-repair quotation supersession and resume tests in `src/test/kotlin/com/example/techchallenge/serviceorder/domain/AdditionalRepairTest.kt`
+- [X] T084 [P] [US3] Write insufficient/concurrent/idempotent inventory consumption tests in `src/test/kotlin/com/example/techchallenge/serviceorder/application/ExecutionInventoryIntegrationTest.kt`
+- [X] T085 [US3] Implement exact ServiceOrderStatus transitions and named lifecycle operations in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrderLifecycle.kt`
+- [X] T086 [US3] Implement additional-repair scope changes, quotation supersession, and approval reset in `src/main/kotlin/com/example/techchallenge/serviceorder/domain/model/ServiceOrder.kt`
+- [X] T087 [US3] Implement transactional ordered stock consumption and outstanding-quantity idempotency in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/StartExecution.kt`
+- [X] T088 [P] [US3] Implement AddAdditionalRepairs and request-new-approval orchestration in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/AddAdditionalRepairs.kt`
+- [X] T089 [P] [US3] Implement FinishServiceOrder and DeliverVehicle orchestration in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/CompleteServiceOrder.kt`
+- [X] T090 [US3] Add additional-repair, execution, finish, and delivery business-action routes to `src/main/kotlin/com/example/techchallenge/serviceorder/api/controller/ServiceOrderCommandController.kt`
+- [X] T091 [US3] Add safe structured lifecycle, approval, and inventory operation logging in `src/main/kotlin/com/example/techchallenge/serviceorder/application/ServiceOrderAuditLogger.kt`
+- [X] T092 [US3] Verify the complete lifecycle, rollback, immutable Finished/Delivered history, and retry safety in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderLifecycleIntegrationTest.kt`
 
 **Checkpoint**: User Story 3 completes the traceable operational workflow from RECEIVED through DELIVERED.
 
@@ -235,15 +235,15 @@ disclose nothing, then list/filter and inspect complete details with an administ
 
 **Recommended branch**: `feature/customer-tracking`
 
-- [ ] T093 [P] [US4] Write restricted tracking projection and customer-readable progress tests in `src/test/kotlin/com/example/techchallenge/serviceorder/application/TrackServiceOrderTest.kt`
-- [ ] T094 [P] [US4] Write missing, wrong, expired, revoked, and cross-order token concealment tests in `src/test/kotlin/com/example/techchallenge/serviceorder/api/CustomerTrackingSecurityIntegrationTest.kt`
-- [ ] T095 [P] [US4] Write paged status filtering and detailed administrative query-count tests in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderQueryIntegrationTest.kt`
-- [ ] T096 [US4] Implement bounded summary and optimized detail query projections in `src/main/kotlin/com/example/techchallenge/serviceorder/infrastructure/persistence/ServiceOrderQueryAdapter.kt`
-- [ ] T097 [P] [US4] Implement customer-safe tracking response mapping in `src/main/kotlin/com/example/techchallenge/serviceorder/api/CustomerTrackingDtos.kt`
-- [ ] T098 [US4] Implement TrackServiceOrder with hashed-token, expiry, revocation, and order-scope checks in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/TrackServiceOrder.kt`
-- [ ] T099 [P] [US4] Implement administrative list/detail query use cases in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/QueryServiceOrders.kt`
-- [ ] T100 [US4] Implement public tracking and secured administrative list/detail endpoints in `src/main/kotlin/com/example/techchallenge/serviceorder/api/controller/ServiceOrderQueryController.kt`
-- [ ] T101 [US4] Verify bounded pages, no N+1 query pattern, restricted fields, and current progress in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderTrackingEndToEndTest.kt`
+- [X] T093 [P] [US4] Write restricted tracking projection and customer-readable progress tests in `src/test/kotlin/com/example/techchallenge/serviceorder/application/TrackServiceOrderTest.kt`
+- [X] T094 [P] [US4] Write missing, wrong, expired, revoked, and cross-order token concealment tests in `src/test/kotlin/com/example/techchallenge/serviceorder/api/CustomerTrackingSecurityIntegrationTest.kt`
+- [X] T095 [P] [US4] Write paged status filtering and detailed administrative query-count tests in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderQueryIntegrationTest.kt`
+- [X] T096 [US4] Implement bounded summary and optimized detail query projections in `src/main/kotlin/com/example/techchallenge/serviceorder/infrastructure/persistence/ServiceOrderQueryAdapter.kt`
+- [X] T097 [P] [US4] Implement customer-safe tracking response mapping in `src/main/kotlin/com/example/techchallenge/serviceorder/api/CustomerTrackingDtos.kt`
+- [X] T098 [US4] Implement TrackServiceOrder with hashed-token, expiry, revocation, and order-scope checks in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/TrackServiceOrder.kt`
+- [X] T099 [P] [US4] Implement administrative list/detail query use cases in `src/main/kotlin/com/example/techchallenge/serviceorder/application/usecase/QueryServiceOrders.kt`
+- [X] T100 [US4] Implement public tracking and secured administrative list/detail endpoints in `src/main/kotlin/com/example/techchallenge/serviceorder/api/controller/ServiceOrderQueryController.kt`
+- [X] T101 [US4] Verify bounded pages, no N+1 query pattern, restricted fields, and current progress in `src/test/kotlin/com/example/techchallenge/serviceorder/api/ServiceOrderTrackingEndToEndTest.kt`
 
 **Checkpoint**: User Story 4 passes independently without exposing administrative or unrelated customer data.
 
@@ -258,13 +258,13 @@ and verify the average, count, interval boundaries, and empty-result semantics.
 
 **Recommended branch**: `feature/execution-metrics`
 
-- [ ] T102 [P] [US5] Write active-interval pairing, approval-wait exclusion, range, and empty-set unit tests in `src/test/kotlin/com/example/techchallenge/metrics/application/ExecutionTimeCalculatorTest.kt`
-- [ ] T103 [P] [US5] Write PostgreSQL lifecycle-history metric query tests in `src/test/kotlin/com/example/techchallenge/metrics/infrastructure/ExecutionTimeQueryIntegrationTest.kt`
-- [ ] T104 [US5] Implement active execution interval calculation from status history in `src/main/kotlin/com/example/techchallenge/metrics/application/ExecutionTimeCalculator.kt`
-- [ ] T105 [US5] Implement indexed lifecycle-history query adapter for inclusive-start/exclusive-end completion periods in `src/main/kotlin/com/example/techchallenge/metrics/infrastructure/ExecutionTimeQueryAdapter.kt`
-- [ ] T106 [US5] Implement the authenticated average execution-time use case and response in `src/main/kotlin/com/example/techchallenge/metrics/application/GetAverageExecutionTime.kt`
-- [ ] T107 [US5] Implement the secured execution-time endpoint and date-range validation in `src/main/kotlin/com/example/techchallenge/metrics/api/ExecutionMetricsController.kt`
-- [ ] T108 [US5] Verify continuous, paused, multiple-interval, and no-data metric responses end to end in `src/test/kotlin/com/example/techchallenge/metrics/api/ExecutionMetricsEndToEndTest.kt`
+- [X] T102 [P] [US5] Write active-interval pairing, approval-wait exclusion, range, and empty-set unit tests in `src/test/kotlin/com/example/techchallenge/metrics/application/ExecutionTimeCalculatorTest.kt`
+- [X] T103 [P] [US5] Write PostgreSQL lifecycle-history metric query tests in `src/test/kotlin/com/example/techchallenge/metrics/infrastructure/ExecutionTimeQueryIntegrationTest.kt`
+- [X] T104 [US5] Implement active execution interval calculation from status history in `src/main/kotlin/com/example/techchallenge/metrics/application/ExecutionTimeCalculator.kt`
+- [X] T105 [US5] Implement indexed lifecycle-history query adapter for inclusive-start/exclusive-end completion periods in `src/main/kotlin/com/example/techchallenge/metrics/infrastructure/ExecutionTimeQueryAdapter.kt`
+- [X] T106 [US5] Implement the authenticated average execution-time use case and response in `src/main/kotlin/com/example/techchallenge/metrics/application/GetAverageExecutionTime.kt`
+- [X] T107 [US5] Implement the secured execution-time endpoint and date-range validation in `src/main/kotlin/com/example/techchallenge/metrics/api/ExecutionMetricsController.kt`
+- [X] T108 [US5] Verify continuous, paused, multiple-interval, and no-data metric responses end to end in `src/test/kotlin/com/example/techchallenge/metrics/api/ExecutionMetricsEndToEndTest.kt`
 
 **Checkpoint**: All five user stories are functional and independently verified.
 
@@ -276,11 +276,11 @@ and verify the average, count, interval boundaries, and empty-result semantics.
 
 **Recommended branch**: `feature/api-quality`
 
-- [ ] T109 [P] Configure springdoc metadata, Bearer JWT security scheme, and local-only Swagger UI in `src/main/kotlin/com/example/techchallenge/shared/infrastructure/config/OpenApiConfiguration.kt`
-- [ ] T110 [P] Add controller/DTO OpenAPI annotations for authentication, customer, vehicle, catalog, inventory, service-order, tracking, approval, and metrics packages under `src/main/kotlin/com/example/techchallenge/`
-- [ ] T111 Verify runtime paths, methods, statuses, schemas, security, and shared errors against `specs/001-repair-shop-mvp/contracts/openapi.yaml` in `src/test/kotlin/com/example/techchallenge/shared/api/OpenApiContractIntegrationTest.kt`
-- [ ] T112 Verify all collection APIs enforce page size 1..100 and stable page metadata in `src/test/kotlin/com/example/techchallenge/shared/api/PaginationIntegrationTest.kt`
-- [ ] T113 Verify customer/vehicle/catalog/inventory/order cross-capability workflow and transactional consistency in `src/test/kotlin/com/example/techchallenge/support/RepairShopMvpEndToEndTest.kt`
+- [X] T109 [P] Configure springdoc metadata, Bearer JWT security scheme, and local-only Swagger UI in `src/main/kotlin/com/example/techchallenge/shared/infrastructure/config/OpenApiConfiguration.kt`
+- [X] T110 [P] Add controller/DTO OpenAPI annotations for authentication, customer, vehicle, catalog, inventory, service-order, tracking, approval, and metrics packages under `src/main/kotlin/com/example/techchallenge/`
+- [X] T111 Verify runtime paths, methods, statuses, schemas, security, and shared errors against `specs/001-repair-shop-mvp/contracts/openapi.yaml` in `src/test/kotlin/com/example/techchallenge/shared/api/OpenApiContractIntegrationTest.kt`
+- [X] T112 Verify all collection APIs enforce page size 1..100 and stable page metadata in `src/test/kotlin/com/example/techchallenge/shared/api/PaginationIntegrationTest.kt`
+- [X] T113 Verify customer/vehicle/catalog/inventory/order cross-capability workflow and transactional consistency in `src/test/kotlin/com/example/techchallenge/support/RepairShopMvpEndToEndTest.kt`
 
 ---
 
@@ -290,12 +290,12 @@ and verify the average, count, interval boundaries, and empty-result semantics.
 
 **Recommended branch**: `test/integration-suite` only for gaps not naturally fixed on a capability branch.
 
-- [ ] T114 Configure Kover reports and >=80% line verification for critical domain packages in `build.gradle`
-- [ ] T115 Add missing domain/application tests identified by the Kover report under `src/test/kotlin/com/example/techchallenge/`
-- [ ] T116 Add repeated clean-run and test-order independence validation guidance to `specs/001-repair-shop-mvp/quickstart.md`
-- [ ] T117 Create representative fixture generation for 100,000 records in `src/test/kotlin/com/example/techchallenge/support/RepresentativeLoadFixture.kt`
-- [ ] T118 Verify 50-user primary-flow p95 latency, bounded queries, and query counts in `src/test/kotlin/com/example/techchallenge/performance/RepairShopPerformanceTest.kt`
-- [ ] T119 Run `clean check koverVerify koverHtmlReport` three consecutive times and record reproducible results in `docs/submission/checklist.md`
+- [X] T114 Configure Kover reports and >=80% line verification for critical domain packages in `build.gradle`
+- [X] T115 Add missing domain/application tests identified by the Kover report under `src/test/kotlin/com/example/techchallenge/`
+- [X] T116 Add repeated clean-run and test-order independence validation guidance to `specs/001-repair-shop-mvp/quickstart.md`
+- [X] T117 Create representative fixture generation for 100,000 records in `src/test/kotlin/com/example/techchallenge/support/RepresentativeLoadFixture.kt`
+- [X] T118 Verify 50-user primary-flow p95 latency, bounded queries, and query counts in `src/test/kotlin/com/example/techchallenge/performance/RepairShopPerformanceTest.kt`
+- [X] T119 Run `clean check koverVerify koverHtmlReport` three consecutive times and record reproducible results in `docs/submission/checklist.md`
 
 ---
 
@@ -305,12 +305,12 @@ and verify the average, count, interval boundaries, and empty-result semantics.
 
 **Recommended branch**: `chore/docker-setup`
 
-- [ ] T120 [P] Create the non-root multi-stage Java 17 backend image in `Dockerfile`
-- [ ] T121 [P] Create a secrets-free local configuration template in `.env.example`
-- [ ] T122 Configure backend and PostgreSQL services, dependency health, persistent volume, and environment variables in `docker-compose.yml`
-- [ ] T123 Configure public liveness/readiness only and protect other actuator endpoints in `src/main/kotlin/com/example/techchallenge/shared/infrastructure/config/ActuatorSecurityConfiguration.kt`
-- [ ] T124 Add container health, clean Flyway startup, restart persistence, and shutdown validation to `specs/001-repair-shop-mvp/quickstart.md`
-- [ ] T125 Build and start the environment from a clean database and record the verified commands in `README.md`
+- [X] T120 [P] Create the non-root multi-stage Java 17 backend image in `Dockerfile`
+- [X] T121 [P] Create a secrets-free local configuration template in `.env.example`
+- [X] T122 Configure backend and PostgreSQL services, dependency health, persistent volume, and environment variables in `docker-compose.yml`
+- [X] T123 Configure public liveness/readiness only and protect other actuator endpoints in `src/main/kotlin/com/example/techchallenge/shared/infrastructure/config/ActuatorSecurityConfiguration.kt`
+- [X] T124 Add container health, clean Flyway startup, restart persistence, and shutdown validation to `specs/001-repair-shop-mvp/quickstart.md`
+- [X] T125 Build and start the environment from a clean database and record the verified commands in `README.md`
 
 ---
 
@@ -322,22 +322,22 @@ and verify the average, count, interval boundaries, and empty-result semantics.
 
 **Recommended branch**: `docs/ddd-documentation`
 
-- [ ] T126 [P] Document Portuguese mappings, canonical English terms, definitions, and invariants in `docs/ddd/ubiquitous-language.md`
-- [ ] T127 [P] Document implemented aggregate roots, entities, value objects, repositories, and owned invariants in `docs/ddd/aggregates.md`
-- [ ] T128 Create the implemented relationship and aggregate-boundary Mermaid diagrams in `docs/ddd/domain-model.md`
-- [ ] T129 Document ServiceOrder actors, commands, events, aggregates, policies, rules, and read models in `docs/ddd/event-storming-service-order.md`
-- [ ] T130 Document Part/Supply actors, commands, events, InventoryItem aggregate, policies, and insufficient-stock behavior in `docs/ddd/event-storming-inventory.md`
+- [X] T126 [P] Document Portuguese mappings, canonical English terms, definitions, and invariants in `docs/ddd/ubiquitous-language.md`
+- [X] T127 [P] Document implemented aggregate roots, entities, value objects, repositories, and owned invariants in `docs/ddd/aggregates.md`
+- [X] T128 Create the implemented relationship and aggregate-boundary Mermaid diagrams in `docs/ddd/domain-model.md`
+- [X] T129 Document ServiceOrder actors, commands, events, aggregates, policies, rules, and read models in `docs/ddd/event-storming-service-order.md`
+- [X] T130 Document Part/Supply actors, commands, events, InventoryItem aggregate, policies, and insufficient-stock behavior in `docs/ddd/event-storming-inventory.md`
 
 ### Architecture Documentation
 
 **Recommended branch**: `docs/architecture`
 
-- [ ] T131 [P] Document layers, dependency direction, persistence, REST, authentication, and PostgreSQL rationale in `docs/architecture/architecture-overview.md`
-- [ ] T132 [P] Create the Customer, Administrator, backend, and PostgreSQL Mermaid context diagram in `docs/architecture/system-context.md`
-- [ ] T133 [P] Create the module/component and inward-dependency Mermaid diagrams in `docs/architecture/modular-monolith.md`
-- [ ] T134 Document every valid command-driven state transition and invalid-transition rule in `docs/architecture/service-order-lifecycle.md`
-- [ ] T135 Add only useful ServiceOrder creation, approval, and tracking sequence diagrams in `docs/architecture/sequences.md`
-- [ ] T136 Cross-check every DDD and architecture term, command, event, module, and transition against `src/main/kotlin/com/example/techchallenge/` and correct documentation drift under `docs/`
+- [X] T131 [P] Document layers, dependency direction, persistence, REST, authentication, and PostgreSQL rationale in `docs/architecture/architecture-overview.md`
+- [X] T132 [P] Create the Customer, Administrator, backend, and PostgreSQL Mermaid context diagram in `docs/architecture/system-context.md`
+- [X] T133 [P] Create the module/component and inward-dependency Mermaid diagrams in `docs/architecture/modular-monolith.md`
+- [X] T134 Document every valid command-driven state transition and invalid-transition rule in `docs/architecture/service-order-lifecycle.md`
+- [X] T135 Add only useful ServiceOrder creation, approval, and tracking sequence diagrams in `docs/architecture/sequences.md`
+- [X] T136 Cross-check every DDD and architecture term, command, event, module, and transition against `src/main/kotlin/com/example/techchallenge/` and correct documentation drift under `docs/`
 
 ---
 
@@ -349,21 +349,21 @@ and verify the average, count, interval boundaries, and empty-result semantics.
 
 **Recommended branch**: `docs/security-analysis`
 
-- [ ] T137 Document Trivy filesystem/image commands, target, scan date, findings, severity, analysis, and remediation format in `docs/security/vulnerability-report.md`
+- [X] T137 Document Trivy filesystem/image commands, target, scan date, findings, severity, analysis, and remediation format in `docs/security/vulnerability-report.md`
 - [ ] T138 Run Trivy against the repository and final image and record actual unsuppressed findings in `docs/security/vulnerability-report.md`
 - [ ] T139 Resolve critical findings in the owning files or document accepted non-critical risks with accountable remediation in `docs/security/vulnerability-report.md`
-- [ ] T140 Verify logs and API errors contain no passwords, JWTs, tracking tokens, secrets, full CPF/CNPJ values, or stack traces in `src/test/kotlin/com/example/techchallenge/security/SensitiveDataExposureIntegrationTest.kt`
+- [X] T140 Verify logs and API errors contain no passwords, JWTs, tracking tokens, secrets, full CPF/CNPJ values, or stack traces in `src/test/kotlin/com/example/techchallenge/security/SensitiveDataExposureIntegrationTest.kt`
 
 ### README and Submission
 
 **Recommended branch**: `release/1.0.0` after all implementation branches have merged into `develop`
 
-- [ ] T141 Complete business problem, scope, stack, Kotlin/Java 17, architecture, DDD, package structure, lifecycle, and PostgreSQL rationale in `README.md`
-- [ ] T142 Complete environment variables, local/Docker startup, Flyway, tests, coverage, Swagger, authentication, scanning, and documentation links in `README.md`
-- [ ] T143 Create the complete Phase 1 deliverable checklist with blank group/participant/Discord/link/video fields in `docs/submission/checklist.md`
-- [ ] T144 Document private repository status and required `soat-architecture` access without changing remote permissions in `docs/submission/checklist.md`
-- [ ] T145 Execute every scenario in `specs/001-repair-shop-mvp/quickstart.md` and record final validation evidence in `docs/submission/checklist.md`
-- [ ] T146 Verify implementation terminology and deliverables against `specs/001-repair-shop-mvp/spec.md`, `specs/001-repair-shop-mvp/plan.md`, and `docs/submission/checklist.md`
+- [X] T141 Complete business problem, scope, stack, Kotlin/Java 17, architecture, DDD, package structure, lifecycle, and PostgreSQL rationale in `README.md`
+- [X] T142 Complete environment variables, local/Docker startup, Flyway, tests, coverage, Swagger, authentication, scanning, and documentation links in `README.md`
+- [X] T143 Create the complete Phase 1 deliverable checklist with blank group/participant/Discord/link/video fields in `docs/submission/checklist.md`
+- [X] T144 Document private repository status and required `soat-architecture` access without changing remote permissions in `docs/submission/checklist.md`
+- [X] T145 Execute every scenario in `specs/001-repair-shop-mvp/quickstart.md` and record final validation evidence in `docs/submission/checklist.md`
+- [X] T146 Verify implementation terminology and deliverables against `specs/001-repair-shop-mvp/spec.md`, `specs/001-repair-shop-mvp/plan.md`, and `docs/submission/checklist.md`
 
 **Checkpoint**: Phase 1 is eligible for developer-controlled merge from `release/1.0.0` to `main` and
 `develop`, followed by developer-controlled tag `v1.0.0`. No agent performs those Git operations without

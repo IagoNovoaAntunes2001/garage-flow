@@ -1,0 +1,3 @@
+package com.example.techchallenge.records
+
+class RepairShopRecordsEndToEndTest
