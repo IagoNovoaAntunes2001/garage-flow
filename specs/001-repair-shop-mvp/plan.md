@@ -128,6 +128,169 @@ published ports, not another capability's controllers, Spring Data repositories,
 - JPA mappings are unidirectional where possible. Order detail queries use explicit fetch/entity graphs or
   projections; list queries never fetch full quotation/history graphs.
 
+## Version Control and Git Workflow
+
+### Version Control Strategy
+
+Use a lightweight Git Flow model with two permanent branches:
+
+- `main` represents stable, deliverable versions of the Tech Challenge.
+- `develop` is the integration branch for ongoing development.
+
+Regular feature work MUST NOT be implemented directly on `main` or `develop`. Development branches MUST
+originate from `develop`, except urgent post-release hotfixes, which originate from `main`.
+
+Supported branch prefixes are:
+
+- `feature/*` for new functionality.
+- `fix/*` for non-production bug fixes.
+- `refactor/*` for significant refactoring when a dedicated branch is useful.
+- `docs/*` for documentation-only work.
+- `chore/*` for configuration and project maintenance.
+- `test/*` for testing-specific work that does not naturally belong to a feature branch.
+- `release/*` for preparation of deliverable releases.
+- `hotfix/*` for urgent corrections originating from `main`.
+
+Branch names MUST describe cohesive business or delivery capabilities. Examples include:
+
+```text
+feature/customer-management
+feature/vehicle-management
+feature/service-catalog
+feature/inventory-management
+feature/service-order
+feature/quotation-approval
+feature/authentication
+docs/ddd-documentation
+docs/architecture-diagrams
+chore/kotlin-migration
+chore/database-setup
+chore/docker-setup
+```
+
+Do not create one branch for every Spec Kit task. Related domain, application, persistence, API, and test
+tasks SHOULD share a capability branch when they form one reviewable increment. For example, the Customer
+entity, repository, use cases, controller, and related tests can belong to
+`feature/customer-management`.
+
+### Commits
+
+Use Conventional Commits with the supported types `feat`, `fix`, `refactor`, `test`, `docs`, `chore`,
+`build`, and `ci`. Prefer scopes based on business capabilities or a clearly bounded technical concern.
+
+Representative commits are:
+
+```text
+build(kotlin): configure Kotlin JVM 17
+refactor(kotlin): migrate application from Java to Kotlin
+feat(customer): implement customer domain model
+feat(customer): add customer registration use case
+feat(vehicle): implement vehicle management
+feat(inventory): implement stock management
+feat(service-order): implement service order aggregate
+feat(service-order): enforce lifecycle transitions
+feat(quotation): implement quotation calculation
+feat(auth): implement JWT authentication
+test(service-order): cover lifecycle transitions
+test(inventory): cover insufficient stock rules
+docs(ddd): document ubiquitous language
+docs(architecture): add modular monolith diagram
+chore(database): configure PostgreSQL and Flyway
+chore(docker): configure local environment
+```
+
+Each commit MUST represent one meaningful, working change and MUST NOT be split artificially by file.
+Broken code MUST NOT be committed intentionally. Tests for a behavior SHOULD be committed with that
+behavior or immediately afterward while the branch remains green.
+
+### Pull Request and Release Flow
+
+Normal development follows:
+
+```text
+develop -> feature/<capability> -> Pull Request -> develop
+```
+
+Feature branches MUST NOT normally merge directly into `main`. When Phase 1 reaches a deliverable state,
+create `release/1.0.0` from `develop`. The release branch is restricted to final fixes, README completion,
+documentation review, Docker and Swagger validation, testing, coverage validation, vulnerability analysis,
+and submission preparation.
+
+After successful validation:
+
+```text
+release/1.0.0 -> main
+release/1.0.0 -> develop
+```
+
+Create tag `v1.0.0` on the validated `main` release with release meaning `Phase 1 Tech Challenge`. Release
+changes MUST also exist in `develop` so subsequent work does not lose release fixes.
+
+### Hotfix Flow
+
+Urgent corrections to an already released version follow:
+
+```text
+main -> hotfix/<description> -> main
+                              -> develop
+```
+
+A completed hotfix MUST be merged into both `main` and `develop` through the normal reviewed process.
+
+### Branch Protection Expectations
+
+GitHub SHOULD be configured with these protections:
+
+- `main` requires pull requests, blocks force pushes, requires successful CI checks when CI exists, and
+  does not receive direct development commits.
+- `develop` receives changes through pull requests and requires successful CI checks when CI exists.
+- Group projects SHOULD require at least one pull-request approval when practical.
+
+These settings are repository administration work and are documented for maintainers; they are not
+configured automatically by implementation agents.
+
+### Spec Kit Task Integration
+
+`tasks.md` MUST preserve technical dependency order while grouping tasks into cohesive, reviewable
+implementation groups. A group MAY carry a recommended branch annotation, but a branch MUST NOT be forced
+for every task. Prefer approximately these implementation branches:
+
+1. `chore/kotlin-migration`
+2. `chore/project-foundation`
+3. `feature/customer-management`
+4. `feature/vehicle-management`
+5. `feature/service-catalog`
+6. `feature/inventory-management`
+7. `feature/service-order`
+8. `feature/quotation-approval`
+9. `feature/customer-tracking`
+10. `feature/authentication`
+11. `feature/execution-metrics`
+12. `feature/api-quality`
+13. `test/integration-suite`, only if remaining integration work does not naturally belong to a feature
+14. `chore/docker-setup`
+15. `docs/ddd-documentation`
+16. `docs/architecture`
+17. `docs/security-analysis`
+
+Task generation MAY combine adjacent groups when that produces a more cohesive change, but it MUST NOT
+move tasks ahead of their technical prerequisites. Tests developed with a capability remain in that
+capability's group; `test/integration-suite` is reserved for cross-capability or final integration gaps.
+
+### Automation Safety
+
+The coding agent MAY modify in-scope files and run local Git inspection commands. Unless the user gives
+explicit instructions for the specific action, the agent MUST NOT:
+
+- Push branches.
+- Merge pull requests.
+- Force push.
+- Delete remote branches.
+- Create releases.
+- Create tags.
+
+The developer remains responsible for deciding when changes are pushed, merged, released, or tagged.
+
 ## Implementation Sequence
 
 Testing accompanies each phase and is not deferred.
