@@ -9,4 +9,5 @@ WORKDIR /app
 COPY --from=build /workspace/build/libs/*.jar /app/garage-flow.jar
 USER app
 EXPOSE 8080
+HEALTHCHECK --interval=30s --timeout=5s --retries=5 CMD wget -qO- http://localhost:8080/actuator/health || exit 1
 ENTRYPOINT ["java","-jar","/app/garage-flow.jar"]
