@@ -26,12 +26,12 @@ developer-controlled actions under the Git workflow in [plan.md](plan.md).
 
 **Recommended branch**: `chore/kotlin-migration`
 
-- [ ] T001 Update `gradle/wrapper/gradle-wrapper.properties` to Gradle 8.14.3 and verify the wrapper runs on Java 17
-- [ ] T002 Configure Spring Boot 3.5.16, Kotlin 2.2.21 JVM/Spring/JPA plugins, JVM 17, and Kover 0.9.8 in `build.gradle`
-- [ ] T003 Add minimal Web, JPA, Security/Jose, Validation, Actuator, Flyway, PostgreSQL, Jackson Kotlin, OpenAPI, JUnit 5, MockK, and Testcontainers dependencies in `build.gradle`
-- [ ] T004 [P] Migrate the application bootstrap to `src/main/kotlin/com/example/techchallenge/TechChallengeApplication.kt`
-- [ ] T005 [P] Migrate the context smoke test to `src/test/kotlin/com/example/techchallenge/TechChallengeApplicationTests.kt`
-- [ ] T006 Run the Kotlin context test and then remove superseded files `src/main/java/com/example/techchallenge/TechChallengeApplication.java` and `src/test/java/com/example/techchallenge/TechChallengeApplicationTests.java`
+- [X] T001 Update `gradle/wrapper/gradle-wrapper.properties` to Gradle 8.14.3 and verify the wrapper runs on Java 17
+- [X] T002 Configure Spring Boot 3.5.16, Kotlin 2.2.21 JVM/Spring/JPA plugins, JVM 17, and Kover 0.9.8 in `build.gradle`
+- [X] T003 Add minimal Web, JPA, Security/Jose, Validation, Actuator, Flyway, PostgreSQL, Jackson Kotlin, OpenAPI, JUnit 5, MockK, and Testcontainers dependencies in `build.gradle`
+- [X] T004 [P] Migrate the application bootstrap to `src/main/kotlin/com/example/techchallenge/TechChallengeApplication.kt`
+- [X] T005 [P] Migrate the context smoke test to `src/test/kotlin/com/example/techchallenge/TechChallengeApplicationTests.kt`
+- [X] T006 Run the Kotlin context test and then remove superseded files `src/main/java/com/example/techchallenge/TechChallengeApplication.java` and `src/test/java/com/example/techchallenge/TechChallengeApplicationTests.java`
 
 **Checkpoint**: The original project builds as one Kotlin application on Java 17 with no duplicate Java
 implementation.
