@@ -49,31 +49,31 @@ all user stories.
 
 **Recommended branch**: `chore/project-foundation`
 
-- [ ] T007 Preserve the application name and add environment-driven datasource, Flyway, JPA validation, JWT, pagination, and management settings in `src/main/resources/application.properties`
-- [ ] T008 [P] Add local-only Swagger and safe actuator configuration in `src/main/resources/application-local.properties`
-- [ ] T009 [P] Add deterministic test profile settings in `src/test/resources/application-test.properties`
-- [ ] T010 Create the complete constrained and indexed Phase 1 PostgreSQL schema in `src/main/resources/db/migration/V1__initial_schema.sql`
-- [ ] T011 [P] Implement reusable PostgreSQL Testcontainers lifecycle support in `src/test/kotlin/com/example/techchallenge/support/PostgreSqlIntegrationTest.kt`
-- [ ] T012 Verify Flyway applies from empty PostgreSQL and Hibernate validates the schema in `src/test/kotlin/com/example/techchallenge/support/DatabaseMigrationIntegrationTest.kt`
+- [X] T007 Preserve the application name and add environment-driven datasource, Flyway, JPA validation, JWT, pagination, and management settings in `src/main/resources/application.properties`
+- [X] T008 [P] Add local-only Swagger and safe actuator configuration in `src/main/resources/application-local.properties`
+- [X] T009 [P] Add deterministic test profile settings in `src/test/resources/application-test.properties`
+- [X] T010 Create the complete constrained and indexed Phase 1 PostgreSQL schema in `src/main/resources/db/migration/V1__initial_schema.sql`
+- [X] T011 [P] Implement reusable PostgreSQL Testcontainers lifecycle support in `src/test/kotlin/com/example/techchallenge/support/PostgreSqlIntegrationTest.kt`
+- [X] T012 Verify Flyway applies from empty PostgreSQL and Hibernate validates the schema in `src/test/kotlin/com/example/techchallenge/support/DatabaseMigrationIntegrationTest.kt`
 
 ### Shared Domain and API Foundation
 
 **Recommended branch**: `chore/project-foundation`
 
-- [ ] T013 [P] Write Money arithmetic, scale, currency, and rejection tests in `src/test/kotlin/com/example/techchallenge/shared/domain/MoneyTest.kt`
-- [ ] T014 [P] Write CPF and CNPJ normalization/check-digit tests in `src/test/kotlin/com/example/techchallenge/shared/domain/DocumentTest.kt`
-- [ ] T015 [P] Write Brazilian legacy and Mercosur plate validation tests in `src/test/kotlin/com/example/techchallenge/shared/domain/LicensePlateTest.kt`
-- [ ] T016 [P] Implement BRL Money with exact BigDecimal arithmetic in `src/main/kotlin/com/example/techchallenge/shared/domain/Money.kt`
-- [ ] T017 [P] Implement sealed CPF/CNPJ Document value types in `src/main/kotlin/com/example/techchallenge/shared/domain/Document.kt`
-- [ ] T018 [P] Implement normalized LicensePlate and vehicle-year rules in `src/main/kotlin/com/example/techchallenge/shared/domain/LicensePlate.kt`
-- [ ] T019 [P] Implement typed UUID identifiers in `src/main/kotlin/com/example/techchallenge/shared/domain/Identifiers.kt`
-- [ ] T020 [P] Implement shared domain exceptions and stable error codes in `src/main/kotlin/com/example/techchallenge/shared/domain/DomainException.kt`
-- [ ] T021 [P] Implement injectable Clock and secure token ports in `src/main/kotlin/com/example/techchallenge/shared/domain/TechnicalPorts.kt`
-- [ ] T022 Implement the standard ApiError DTO and field violations in `src/main/kotlin/com/example/techchallenge/shared/api/error/ApiError.kt`
-- [ ] T023 Implement centralized validation, domain, persistence, and security exception mapping in `src/main/kotlin/com/example/techchallenge/shared/api/error/GlobalExceptionHandler.kt`
-- [ ] T024 [P] Implement correlation-ID creation and safe request logging in `src/main/kotlin/com/example/techchallenge/shared/infrastructure/observability/CorrelationIdFilter.kt`
-- [ ] T025 [P] Implement shared zero-based page/size validation and response metadata in `src/main/kotlin/com/example/techchallenge/shared/api/Pagination.kt`
-- [ ] T026 Verify standard error bodies, field validation, correlation IDs, and absent stack traces in `src/test/kotlin/com/example/techchallenge/shared/api/GlobalExceptionHandlerIntegrationTest.kt`
+- [X] T013 [P] Write Money arithmetic, scale, currency, and rejection tests in `src/test/kotlin/com/example/techchallenge/shared/domain/MoneyTest.kt`
+- [X] T014 [P] Write CPF and CNPJ normalization/check-digit tests in `src/test/kotlin/com/example/techchallenge/shared/domain/DocumentTest.kt`
+- [X] T015 [P] Write Brazilian legacy and Mercosur plate validation tests in `src/test/kotlin/com/example/techchallenge/shared/domain/LicensePlateTest.kt`
+- [X] T016 [P] Implement BRL Money with exact BigDecimal arithmetic in `src/main/kotlin/com/example/techchallenge/shared/domain/Money.kt`
+- [X] T017 [P] Implement sealed CPF/CNPJ Document value types in `src/main/kotlin/com/example/techchallenge/shared/domain/Document.kt`
+- [X] T018 [P] Implement normalized LicensePlate and vehicle-year rules in `src/main/kotlin/com/example/techchallenge/shared/domain/LicensePlate.kt`
+- [X] T019 [P] Implement typed UUID identifiers in `src/main/kotlin/com/example/techchallenge/shared/domain/Identifiers.kt`
+- [X] T020 [P] Implement shared domain exceptions and stable error codes in `src/main/kotlin/com/example/techchallenge/shared/domain/DomainException.kt`
+- [X] T021 [P] Implement injectable Clock and secure token ports in `src/main/kotlin/com/example/techchallenge/shared/domain/TechnicalPorts.kt`
+- [X] T022 Implement the standard ApiError DTO and field violations in `src/main/kotlin/com/example/techchallenge/shared/api/error/ApiError.kt`
+- [X] T023 Implement centralized validation, domain, persistence, and security exception mapping in `src/main/kotlin/com/example/techchallenge/shared/api/error/GlobalExceptionHandler.kt`
+- [X] T024 [P] Implement correlation-ID creation and safe request logging in `src/main/kotlin/com/example/techchallenge/shared/infrastructure/observability/CorrelationIdFilter.kt`
+- [X] T025 [P] Implement shared zero-based page/size validation and response metadata in `src/main/kotlin/com/example/techchallenge/shared/api/Pagination.kt`
+- [X] T026 Verify standard error bodies, field validation, correlation IDs, and absent stack traces in `src/test/kotlin/com/example/techchallenge/shared/api/GlobalExceptionHandlerIntegrationTest.kt`
 
 ### Administrative Authentication Foundation
 
