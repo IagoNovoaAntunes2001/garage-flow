@@ -19,6 +19,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException
 import org.springframework.web.bind.annotation.ExceptionHandler
 import org.springframework.web.bind.annotation.RestControllerAdvice
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException
+import org.springframework.web.servlet.resource.NoResourceFoundException
 import java.time.Instant
 
 @RestControllerAdvice
@@ -93,6 +94,17 @@ class GlobalExceptionHandler {
         HttpStatus.FORBIDDEN,
         "FORBIDDEN",
         "Access is denied",
+        request,
+    )
+
+    @ExceptionHandler(NoResourceFoundException::class)
+    fun handleNoResource(
+        exception: NoResourceFoundException,
+        request: HttpServletRequest,
+    ): ResponseEntity<ApiError> = response(
+        HttpStatus.NOT_FOUND,
+        "NOT_FOUND",
+        "Resource not found",
         request,
     )
 

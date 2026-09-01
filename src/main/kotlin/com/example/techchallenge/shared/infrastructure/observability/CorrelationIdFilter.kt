@@ -35,7 +35,7 @@ class CorrelationIdFilter : OncePerRequestFilter() {
         requestLogger.info(
             "http_request method={} path={} status={} durationMs={}",
             request.method,
-            request.requestURI,
+            sanitizePath(request.requestURI),
             response.status,
             elapsedNanos / NANOS_PER_MILLISECOND,
         )
@@ -43,12 +43,19 @@ class CorrelationIdFilter : OncePerRequestFilter() {
 
     private fun isValidCorrelationId(value: String): Boolean = CORRELATION_ID_PATTERN.matches(value)
 
+    private fun sanitizePath(path: String): String =
+        path
+            .replace(DOCUMENT_PATTERN, "{document}")
+            .replace(JWT_LIKE_PATTERN, "{token}")
+
     companion object {
         const val HEADER_NAME = "X-Correlation-ID"
         const val ATTRIBUTE_NAME = "garageFlow.correlationId"
         private const val MDC_KEY = "correlationId"
         private const val NANOS_PER_MILLISECOND = 1_000_000
         private val CORRELATION_ID_PATTERN = Regex("^[A-Za-z0-9._-]{1,100}$")
+        private val DOCUMENT_PATTERN = Regex("\\b\\d{11}(?:\\d{3})?\\b")
+        private val JWT_LIKE_PATTERN = Regex("\\b[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\.[A-Za-z0-9_-]+\\b")
         private val requestLogger = LoggerFactory.getLogger(CorrelationIdFilter::class.java)
     }
 }

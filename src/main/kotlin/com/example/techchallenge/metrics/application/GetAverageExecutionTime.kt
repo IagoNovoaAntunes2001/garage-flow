@@ -26,6 +26,7 @@ class GetAverageExecutionTime(
             throw DomainValidationException(ErrorCode.INVALID_PAGINATION, "Metric start must be before end")
         }
         val histories = orders.executionHistory(from, to)
-        return ExecutionTimeSummary(from, to, histories.size, calculator.averageExecutionSeconds(histories))
+        val durations = calculator.executionDurationsSeconds(histories)
+        return ExecutionTimeSummary(from, to, durations.size, if (durations.isEmpty()) null else durations.average())
     }
 }

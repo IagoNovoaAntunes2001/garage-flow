@@ -9,6 +9,7 @@ import com.example.techchallenge.serviceorder.domain.model.ServiceOrderStatus
 import com.example.techchallenge.shared.api.PageRequestDto
 import com.example.techchallenge.shared.api.PageResponse
 import com.example.techchallenge.shared.domain.ServiceOrderId
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import org.springframework.web.bind.annotation.GetMapping
 import org.springframework.web.bind.annotation.PathVariable
 import org.springframework.web.bind.annotation.RequestHeader
@@ -22,10 +23,12 @@ class ServiceOrderQueryController(
     private val tracking: TrackServiceOrder,
 ) {
     @GetMapping("/api/v1/admin/service-orders/{serviceOrderId}")
+    @SecurityRequirement(name = "bearerAuth")
     fun detail(@PathVariable serviceOrderId: UUID): ServiceOrderDetailResponse =
         query.get(ServiceOrderId(serviceOrderId)).toDetailResponse()
 
     @GetMapping("/api/v1/admin/service-orders")
+    @SecurityRequirement(name = "bearerAuth")
     fun list(
         @RequestParam(required = false) status: ServiceOrderStatus?,
         @RequestParam(defaultValue = "0") page: Int,

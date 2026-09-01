@@ -25,4 +25,22 @@ class ExecutionTimeCalculatorTest {
     fun `returns null for empty completed execution set`() {
         assertNull(ExecutionTimeCalculator().averageExecutionSeconds(emptyList()))
     }
+
+    @Test
+    fun `counts only histories with complete execution interval`() {
+        val base = Instant.parse("2026-08-31T12:00:00Z")
+        val completed = OrderExecutionHistory(
+            ServiceOrderId.new(),
+            listOf(
+                ExecutionHistoryEvent(ServiceOrderStatus.IN_EXECUTION, base),
+                ExecutionHistoryEvent(ServiceOrderStatus.FINISHED, base.plusSeconds(45)),
+            ),
+        )
+        val stillExecuting = OrderExecutionHistory(
+            ServiceOrderId.new(),
+            listOf(ExecutionHistoryEvent(ServiceOrderStatus.IN_EXECUTION, base)),
+        )
+
+        assertEquals(listOf(45L), ExecutionTimeCalculator().executionDurationsSeconds(listOf(completed, stillExecuting)))
+    }
 }

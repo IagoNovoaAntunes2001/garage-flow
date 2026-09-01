@@ -15,6 +15,7 @@ import com.example.techchallenge.serviceorder.application.usecase.PrepareQuotati
 import com.example.techchallenge.serviceorder.application.usecase.StartExecution
 import com.example.techchallenge.shared.domain.AdministratorId
 import com.example.techchallenge.shared.domain.ServiceOrderId
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.HttpStatus
 import org.springframework.security.core.Authentication
@@ -39,16 +40,19 @@ class ServiceOrderCommandController(
 ) {
     @PostMapping("/api/v1/admin/service-orders")
     @ResponseStatus(HttpStatus.CREATED)
+    @SecurityRequirement(name = "bearerAuth")
     fun create(@Valid @RequestBody request: CreateServiceOrderRequest): CreateServiceOrderResponse {
         val result = createServiceOrder.execute(request.customerDocument, com.example.techchallenge.shared.domain.VehicleId(request.vehicleId), request.items.map { it.toCommand() })
         return CreateServiceOrderResponse(result.order.toDetailResponse(), result.trackingToken)
     }
 
     @PostMapping("/api/v1/admin/service-orders/{serviceOrderId}/diagnosis/start")
+    @SecurityRequirement(name = "bearerAuth")
     fun startDiagnosis(@PathVariable serviceOrderId: UUID, authentication: Authentication): OrderActionResponse =
         OrderActionResponse(prepareQuotation.startDiagnosis(ServiceOrderId(serviceOrderId), actorId(authentication)).toDetailResponse())
 
     @PostMapping("/api/v1/admin/service-orders/{serviceOrderId}/quotation/request-approval")
+    @SecurityRequirement(name = "bearerAuth")
     fun requestApproval(
         @PathVariable serviceOrderId: UUID,
         @Valid @RequestBody(required = false) request: RepairItemsRequest?,
@@ -58,6 +62,7 @@ class ServiceOrderCommandController(
     )
 
     @PostMapping("/api/v1/admin/service-orders/{serviceOrderId}/additional-repairs")
+    @SecurityRequirement(name = "bearerAuth")
     fun additionalRepairs(
         @PathVariable serviceOrderId: UUID,
         @Valid @RequestBody request: RepairItemsRequest,
@@ -67,14 +72,17 @@ class ServiceOrderCommandController(
     )
 
     @PostMapping("/api/v1/admin/service-orders/{serviceOrderId}/execution/start")
+    @SecurityRequirement(name = "bearerAuth")
     fun startExecution(@PathVariable serviceOrderId: UUID, authentication: Authentication): OrderActionResponse =
         OrderActionResponse(startExecution.execute(ServiceOrderId(serviceOrderId), AdministratorId(UUID.fromString(actorId(authentication)))).toDetailResponse())
 
     @PostMapping("/api/v1/admin/service-orders/{serviceOrderId}/finish")
+    @SecurityRequirement(name = "bearerAuth")
     fun finish(@PathVariable serviceOrderId: UUID, authentication: Authentication): OrderActionResponse =
         OrderActionResponse(completeServiceOrder.finish(ServiceOrderId(serviceOrderId), actorId(authentication)).toDetailResponse())
 
     @PostMapping("/api/v1/admin/service-orders/{serviceOrderId}/delivery")
+    @SecurityRequirement(name = "bearerAuth")
     fun deliver(@PathVariable serviceOrderId: UUID, authentication: Authentication): OrderActionResponse =
         OrderActionResponse(completeServiceOrder.deliver(ServiceOrderId(serviceOrderId), actorId(authentication)).toDetailResponse())
 
