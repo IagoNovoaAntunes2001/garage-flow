@@ -77,7 +77,7 @@ class ServiceOrderLifecycleIntegrationTest : PostgreSqlIntegrationTest() {
             status { isOk() }; jsonPath("$.content", hasSize<Any>(1))
         }
         mockMvc.get("/api/v1/admin/metrics/execution-time") {
-            bearer(); param("from", "2026-08-31T00:00:00Z"); param("to", "2026-09-01T00:00:00Z")
+            bearer(); param("from", "2026-08-31T00:00:00Z"); param("to", "2026-09-02T00:00:00Z")
         }.andExpect {
             status { isOk() }; jsonPath("$.orderCount") { value(1) }
         }

@@ -6,12 +6,15 @@ import java.time.Duration
 
 class ExecutionTimeCalculator {
     fun averageExecutionSeconds(histories: List<OrderExecutionHistory>): Double? {
-        val durations = histories.mapNotNull { history ->
+        val durations = executionDurationsSeconds(histories)
+        if (durations.isEmpty()) return null
+        return durations.average()
+    }
+
+    fun executionDurationsSeconds(histories: List<OrderExecutionHistory>): List<Long> =
+        histories.mapNotNull { history ->
             val start = history.events.firstOrNull { it.status == ServiceOrderStatus.IN_EXECUTION }?.occurredAt
             val finish = history.events.firstOrNull { it.status == ServiceOrderStatus.FINISHED && start != null && !it.occurredAt.isBefore(start) }?.occurredAt
             if (start == null || finish == null) null else Duration.between(start, finish).seconds
         }
-        if (durations.isEmpty()) return null
-        return durations.average()
-    }
 }
