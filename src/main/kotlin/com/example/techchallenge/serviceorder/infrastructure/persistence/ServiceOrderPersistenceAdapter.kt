@@ -162,6 +162,22 @@ interface SpringDataApprovalRepository : JpaRepository<ApprovalEntity, UUID> {
 interface SpringDataStatusHistoryRepository : JpaRepository<StatusHistoryEntity, UUID> {
     fun findAllByServiceOrderIdOrderByOccurredAtAsc(serviceOrderId: UUID): List<StatusHistoryEntity>
     fun findAllByOccurredAtGreaterThanEqualAndOccurredAtLessThanOrderByServiceOrderIdAscOccurredAtAsc(from: Instant, to: Instant): List<StatusHistoryEntity>
+    fun findAllByServiceOrderIdInOrderByServiceOrderIdAscOccurredAtAsc(serviceOrderIds: Collection<UUID>): List<StatusHistoryEntity>
+
+    @Query(
+        """
+        select distinct h.serviceOrderId
+        from StatusHistoryEntity h
+        where h.toStatus = :finishedStatus
+          and h.occurredAt >= :from
+          and h.occurredAt < :to
+        """,
+    )
+    fun findFinishedOrderIdsWithin(
+        @Param("finishedStatus") finishedStatus: ServiceOrderStatus,
+        @Param("from") from: Instant,
+        @Param("to") to: Instant,
+    ): List<UUID>
 }
 
 @Repository
@@ -198,7 +214,9 @@ class ServiceOrderPersistenceAdapter(
     }
 
     override fun executionHistory(from: Instant, to: Instant): List<OrderExecutionHistory> {
-        val rows = history.findAllByOccurredAtGreaterThanEqualAndOccurredAtLessThanOrderByServiceOrderIdAscOccurredAtAsc(from, to)
+        val finishedOrderIds = history.findFinishedOrderIdsWithin(ServiceOrderStatus.FINISHED, from, to)
+        if (finishedOrderIds.isEmpty()) return emptyList()
+        val rows = history.findAllByServiceOrderIdInOrderByServiceOrderIdAscOccurredAtAsc(finishedOrderIds)
         return rows.groupBy { it.serviceOrderId }
             .map { (id, events) -> OrderExecutionHistory(ServiceOrderId(id), events.map { ExecutionHistoryEvent(it.toStatus, it.occurredAt) }) }
     }
