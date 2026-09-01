@@ -27,6 +27,8 @@ Expected outcomes:
 - Unit and integration tests pass independently of execution order.
 - Kover enforces at least 80% line coverage for critical domain packages.
 - The HTML coverage report is generated under `build/reports/kover/`.
+- For release validation, run this command three consecutive times from a clean worktree and record each
+  result in `docs/submission/checklist.md`.
 
 ## 2. Start a Clean Local Environment
 
@@ -189,3 +191,12 @@ docker compose down
 
 Use the documented explicit volume-removal command only when intentionally validating a fresh migration;
 normal shutdown must preserve local database data.
+
+Validated during consolidated implementation:
+
+- `docker compose config`
+- `docker compose build backend`
+- `docker compose up -d postgres backend`
+- `docker compose ps`
+- `docker compose logs backend --tail 80`
+- `docker compose down`

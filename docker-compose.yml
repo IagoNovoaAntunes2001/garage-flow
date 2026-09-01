@@ -1,0 +1,42 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-garage_flow}
+      POSTGRES_USER: ${DATABASE_USERNAME:-garage_flow}
+      POSTGRES_PASSWORD: ${DATABASE_PASSWORD:-garage_flow}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DATABASE_USERNAME:-garage_flow} -d ${POSTGRES_DB:-garage_flow}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build: .
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-local}
+      DATABASE_URL: jdbc:postgresql://postgres:5432/${POSTGRES_DB:-garage_flow}
+      DATABASE_USERNAME: ${DATABASE_USERNAME:-garage_flow}
+      DATABASE_PASSWORD: ${DATABASE_PASSWORD:-garage_flow}
+      JWT_SECRET: ${JWT_SECRET:-change-me-to-at-least-32-characters-local-secret}
+      JWT_ISSUER: ${JWT_ISSUER:-garage-flow}
+      ADMIN_BOOTSTRAP_ENABLED: ${ADMIN_BOOTSTRAP_ENABLED:-true}
+      ADMIN_USERNAME: ${ADMIN_USERNAME:-admin}
+      ADMIN_PASSWORD: ${ADMIN_PASSWORD:-change-me-admin-password}
+    ports:
+      - "${BACKEND_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/actuator/health"]
+      interval: 15s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  postgres-data:
