@@ -6,6 +6,7 @@ import com.example.techchallenge.shared.domain.VehicleId
 import com.example.techchallenge.vehicle.application.usecase.VehicleUseCases
 import com.example.techchallenge.vehicle.domain.model.Vehicle
 import com.example.techchallenge.vehicle.domain.repository.VehiclePage
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.Max
 import jakarta.validation.constraints.Min
@@ -41,6 +42,7 @@ private fun Vehicle.response() = VehicleResponse(id.value, customerId.value, lic
 private fun VehiclePage.response() = VehiclePageResponse(content.map(Vehicle::response), page, size, totalElements, totalPages)
 
 @RestController
+@SecurityRequirement(name = "bearerAuth")
 class VehicleController(private val useCases: VehicleUseCases) {
     @PostMapping("/api/v1/admin/customers/{customerId}/vehicles")
     fun create(@PathVariable customerId: UUID, @Valid @RequestBody request: VehicleRequest): ResponseEntity<VehicleResponse> {

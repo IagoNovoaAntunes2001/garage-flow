@@ -6,6 +6,7 @@ import com.example.techchallenge.catalog.application.usecase.CatalogServiceUseCa
 import com.example.techchallenge.shared.api.PageRequestDto
 import com.example.techchallenge.shared.api.PageResponse
 import com.example.techchallenge.shared.domain.CatalogServiceId
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.NotBlank
@@ -42,6 +43,7 @@ data class CatalogServiceResponse(
 
 @RestController
 @RequestMapping("/api/v1/admin/services")
+@SecurityRequirement(name = "bearerAuth")
 class CatalogServiceController(private val useCases: CatalogServiceUseCases) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

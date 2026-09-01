@@ -145,14 +145,17 @@ interface SpringDataServiceOrderRepository : JpaRepository<ServiceOrderEntity, U
 
 interface SpringDataServiceOrderItemRepository : JpaRepository<ServiceOrderItemEntity, UUID> {
     fun findAllByServiceOrderId(serviceOrderId: UUID): List<ServiceOrderItemEntity>
+    fun findAllByServiceOrderIdIn(serviceOrderIds: Collection<UUID>): List<ServiceOrderItemEntity>
 }
 
 interface SpringDataQuotationRepository : JpaRepository<QuotationEntity, UUID> {
     fun findAllByServiceOrderId(serviceOrderId: UUID): List<QuotationEntity>
+    fun findAllByServiceOrderIdIn(serviceOrderIds: Collection<UUID>): List<QuotationEntity>
 }
 
 interface SpringDataQuotationLineRepository : JpaRepository<QuotationLineEntity, UUID> {
     fun findAllByQuotationId(quotationId: UUID): List<QuotationLineEntity>
+    fun findAllByQuotationIdIn(quotationIds: Collection<UUID>): List<QuotationLineEntity>
 }
 
 interface SpringDataApprovalRepository : JpaRepository<ApprovalEntity, UUID> {
@@ -161,8 +164,8 @@ interface SpringDataApprovalRepository : JpaRepository<ApprovalEntity, UUID> {
 
 interface SpringDataStatusHistoryRepository : JpaRepository<StatusHistoryEntity, UUID> {
     fun findAllByServiceOrderIdOrderByOccurredAtAsc(serviceOrderId: UUID): List<StatusHistoryEntity>
-    fun findAllByOccurredAtGreaterThanEqualAndOccurredAtLessThanOrderByServiceOrderIdAscOccurredAtAsc(from: Instant, to: Instant): List<StatusHistoryEntity>
     fun findAllByServiceOrderIdInOrderByServiceOrderIdAscOccurredAtAsc(serviceOrderIds: Collection<UUID>): List<StatusHistoryEntity>
+    fun findAllByOccurredAtGreaterThanEqualAndOccurredAtLessThanOrderByServiceOrderIdAscOccurredAtAsc(from: Instant, to: Instant): List<StatusHistoryEntity>
 
     @Query(
         """
@@ -210,7 +213,7 @@ class ServiceOrderPersistenceAdapter(
     override fun list(status: ServiceOrderStatus?, page: Int, size: Int): PageResponse<ServiceOrder> {
         val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
         val result = if (status == null) orders.findAll(pageable) else orders.findAllByStatus(status, pageable)
-        return PageResponse(result.content.map { it.toDomain() }, result.number, result.size, result.totalElements, result.totalPages)
+        return PageResponse(result.content.toDomains(), result.number, result.size, result.totalElements, result.totalPages)
     }
 
     override fun executionHistory(from: Instant, to: Instant): List<OrderExecutionHistory> {
@@ -244,6 +247,48 @@ class ServiceOrderPersistenceAdapter(
             updatedAt,
             version,
         )
+    }
+
+    private fun List<ServiceOrderEntity>.toDomains(): List<ServiceOrder> {
+        if (isEmpty()) return emptyList()
+        val orderIds = map { it.id }
+        val orderItems = items.findAllByServiceOrderIdIn(orderIds).groupBy { it.serviceOrderId }
+        val orderQuotations = quotations.findAllByServiceOrderIdIn(orderIds).sortedWith(compareBy<QuotationEntity> { it.serviceOrderId }.thenBy { it.versionNumber })
+        val quotationIds = orderQuotations.map { it.id }
+        val linesByQuotation = if (quotationIds.isEmpty()) {
+            emptyMap()
+        } else {
+            quotationLines.findAllByQuotationIdIn(quotationIds).groupBy { it.quotationId }
+        }
+        val quotationDomainsByOrder = orderQuotations
+            .map { quotation -> quotation.serviceOrderId to quotation.toDomain(linesByQuotation[quotation.id].orEmpty()) }
+            .groupBy({ it.first }, { it.second })
+        val approvalsByQuotation = if (quotationIds.isEmpty()) {
+            emptyMap()
+        } else {
+            approvals.findAllByQuotationIdIn(quotationIds).groupBy { it.quotationId }
+        }
+        val historyByOrder = history.findAllByServiceOrderIdInOrderByServiceOrderIdAscOccurredAtAsc(orderIds).groupBy { it.serviceOrderId }
+
+        return map { entity ->
+            val orderQuotations = quotationDomainsByOrder[entity.id].orEmpty()
+            ServiceOrder.restore(
+                ServiceOrderId(entity.id),
+                CustomerSnapshot(CustomerId(entity.customerId), entity.customerDocumentType, entity.customerDocumentMasked, entity.customerName),
+                VehicleSnapshot(VehicleId(entity.vehicleId), entity.vehicleLicensePlate, entity.vehicleBrand, entity.vehicleModel, entity.vehicleYear),
+                entity.status,
+                orderItems[entity.id].orEmpty().map { it.toDomain() },
+                orderQuotations,
+                orderQuotations.flatMap { quotation -> approvalsByQuotation[quotation.id.value].orEmpty().map { it.toDomain() } },
+                historyByOrder[entity.id].orEmpty().map { it.toDomain() },
+                entity.trackingTokenHash,
+                entity.trackingExpiresAt,
+                entity.trackingRevokedAt,
+                entity.createdAt,
+                entity.updatedAt,
+                entity.version,
+            )
+        }
     }
 
     private fun ServiceOrder.toEntity() = ServiceOrderEntity(

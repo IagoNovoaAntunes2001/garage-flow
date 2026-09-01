@@ -8,6 +8,7 @@ import com.example.techchallenge.customer.api.toResponse
 import com.example.techchallenge.customer.application.usecase.CustomerUseCases
 import com.example.techchallenge.shared.api.PageRequestDto
 import com.example.techchallenge.shared.domain.CustomerId
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import org.springframework.http.ResponseEntity
 import org.springframework.web.bind.annotation.DeleteMapping
@@ -24,6 +25,7 @@ import java.util.UUID
 
 @RestController
 @RequestMapping("/api/v1/admin/customers")
+@SecurityRequirement(name = "bearerAuth")
 class CustomerController(private val useCases: CustomerUseCases) {
     @PostMapping
     fun create(@Valid @RequestBody request: CustomerCreateRequest): ResponseEntity<CustomerResponse> {
