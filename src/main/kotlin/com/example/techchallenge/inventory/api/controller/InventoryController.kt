@@ -9,6 +9,7 @@ import com.example.techchallenge.shared.api.PageRequestDto
 import com.example.techchallenge.shared.api.PageResponse
 import com.example.techchallenge.shared.domain.AdministratorId
 import com.example.techchallenge.shared.domain.InventoryItemId
+import io.swagger.v3.oas.annotations.security.SecurityRequirement
 import jakarta.validation.Valid
 import jakarta.validation.constraints.DecimalMin
 import jakarta.validation.constraints.Min
@@ -58,6 +59,7 @@ data class InventoryItemResponse(
 
 @RestController
 @RequestMapping("/api/v1/admin/inventory-items")
+@SecurityRequirement(name = "bearerAuth")
 class InventoryController(private val useCases: InventoryUseCases) {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)

@@ -62,7 +62,7 @@ class SecurityConfiguration {
                 "/swagger-ui.html",
             ).permitAll()
                 .requestMatchers("/api/v1/admin/**").hasRole("ADMIN")
-                .anyRequest().permitAll()
+                .anyRequest().denyAll()
         }
         .oauth2ResourceServer {
             it.authenticationEntryPoint(authenticationEntryPoint)
