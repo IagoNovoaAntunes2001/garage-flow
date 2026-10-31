@@ -20,7 +20,7 @@ O bucket do estado precisa existir previamente, com criptografia, versionamento 
 terraform init -backend-config="bucket=BUCKET_DO_ESTADO" -backend-config="key=garage-flow/terraform.tfstate" -backend-config="region=REGIAO" -backend-config="use_lockfile=true"
 terraform fmt -check
 terraform validate
-terraform plan -var='aws_region=REGIAO' -var='kubernetes_version=VERSAO_SUPORTADA' -var='eks_public_access_cidrs=["SEU_IP/32"]' -out=deployment.tfplan
+terraform plan -var='aws_region=REGIAO' -var='kubernetes_version=VERSAO_SUPORTADA' -var='cluster_admin_role_arn=ARN_DA_ROLE_ADMIN' -var='eks_public_access_cidrs=["SEU_IP/32"]' -out=deployment.tfplan
 terraform show deployment.tfplan
 terraform apply deployment.tfplan
 ```
@@ -31,7 +31,7 @@ Para esta conta autenticada com `aws login`, o backend S3 não conseguiu ler dir
 
 Aplicar somente após revisar o plano e autorizar custos. O plano pode conter informações sensíveis e está ignorado pelo Git. Para outro ambiente, usar estado isolado e parâmetros próprios; não reutilizar o estado de outro projeto.
 
-Depois do provisionamento, configurar acesso autorizado ao cluster para o usuário e a identidade de deploy; a identidade que cria o cluster recebe acesso administrativo. Obter a senha do RDS do Secrets Manager por canal autorizado e configurar o Secret Kubernetes fora do repositório; considerar uma credencial de aplicação distinta do usuário mestre. O metrics-server é provisionado como add-on do EKS; verificar disponibilidade e métricas antes de testar HPA. Documentar e executar as migrações Flyway e confirmar conectividade privada antes de liberar a aplicação.
+`cluster_admin_role_arn` deve identificar uma role IAM estável, autorizada a administrar o cluster e a chave KMS. Essa role é independente da identidade que executa o Terraform, para impedir alterações de acesso ao alternar entre execução local e CI. Alterar essa role requer revisão cuidadosa do acesso ao cluster e à chave. Obter a senha do RDS do Secrets Manager por canal autorizado e configurar o Secret Kubernetes fora do repositório; considerar uma credencial de aplicação distinta do usuário mestre. O metrics-server é provisionado como add-on do EKS; verificar disponibilidade e métricas antes de testar HPA. Documentar e executar as migrações Flyway e confirmar conectividade privada antes de liberar a aplicação.
 
 O workflow `.github/workflows/ci.yml` executa build e testes nas branches e pull requests. Após um push em `main`, ele só inicia o deploy depois de o CI passar e se `AWS_DEPLOY_ENABLED=true`; mantenha a variável como `false` até validar infraestrutura, credenciais e runner. Depois de ativá-la, reexecute o workflow do push atual de `main`. O deploy usa um runner temporário do CodeBuild e verifica se o commit continua sendo a ponta atual de `main`. A opção Terraform `enable_codebuild_runner` é desativada por padrão. Para habilitá-la, é necessária uma conexão CodeConnections GitHub App previamente autorizada para o repositório (`github_connection_arn`), o ID numérico do usuário autorizado a disparar o deploy (`github_deploy_actor_id`) e o nome do bucket de estado (`terraform_state_bucket`). Confira a [configuração da conexão](https://docs.aws.amazon.com/codebuild/latest/userguide/connections-github-app.html) e valide as permissões e o webhook na conta. Os recursos e filtros dos runners ainda não foram testados na AWS.
 
@@ -43,7 +43,7 @@ O workflow verifica se o RDS já provisionado está disponível; ainda não prov
 
 Ambos os runners usam `BUILD_GENERAL1_SMALL`, sujeito à franquia mensal aplicável do CodeBuild; uso excedente e serviços associados podem consumir créditos. A capacidade desse tamanho para construir e analisar a imagem ainda precisa ser verificada na conta.
 
-O workflow manual `.github/workflows/terraform-plan.yml` apenas gera um plano para revisão, no ambiente `aws-plan` e usando um projeto CodeBuild e uma role separados do deploy. Configure `CODEBUILD_PLAN_PROJECT_NAME`, `AWS_REGION`, `TF_STATE_BUCKET`, `EKS_KUBERNETES_VERSION`, `EKS_PUBLIC_ACCESS_CIDRS` (lista JSON), `JWT_SECRET_ARN`, `CODECONNECTION_ARN` e `DEPLOY_ACTOR_ID`. A role usa a política gerenciada AWS `ReadOnlyAccess` e permissões de lock no estado; seu escopo de leitura é amplo e precisa ser revisado para produção. O endpoint público do EKS fica limitado aos CIDRs configurados; mantenha-os atualizados. O projeto e o fluxo ainda precisam ser criados e testados. A aplicação do plano e o provisionamento do banco ainda não estão automatizados no CI/CD.
+O workflow manual `.github/workflows/terraform-plan.yml` apenas gera um plano para revisão, no ambiente `aws-plan` e usando um projeto CodeBuild e uma role separados do deploy. Configure `CODEBUILD_PLAN_PROJECT_NAME`, `AWS_REGION`, `TF_STATE_BUCKET`, `EKS_KUBERNETES_VERSION`, `CLUSTER_ADMIN_ROLE_ARN`, `EKS_PUBLIC_ACCESS_CIDRS` (lista JSON), `JWT_SECRET_ARN`, `CODECONNECTION_ARN` e `DEPLOY_ACTOR_ID`. A role usa a política gerenciada AWS `ReadOnlyAccess` e permissões de lock no estado; seu escopo de leitura é amplo e precisa ser revisado para produção. O endpoint público do EKS fica limitado aos CIDRs configurados; mantenha-os atualizados. A aplicação do plano e o provisionamento do banco ainda não estão automatizados no CI/CD.
 
 Para deploy manual, com uma imagem já publicada e acesso ao cluster configurado:
 
