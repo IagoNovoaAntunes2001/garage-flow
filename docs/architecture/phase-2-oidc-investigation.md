@@ -27,10 +27,15 @@ conectar CodeBuild ao repositório, a criação das roles, as políticas efetiva
 com o EKS e os custos devem ser verificados antes de considerar essa alternativa funcional. Não copiar a
 sessão pessoal do AWS CLI para os secrets do repositório.
 
-A configuração opcional em `infra/codebuild.tf` e o workflow manual de deploy preparam essa alternativa.
+A configuração opcional em `infra/codebuild.tf` e o job de deploy após CI bem-sucedido em `main` preparam essa alternativa.
 Um segundo runner, definido em `infra/codebuild-plan.tf`, prepara uma identidade distinta para o plano
 Terraform. Os dois fluxos precisam ser validados na AWS. A role de planejamento usa a política gerenciada
 AWS `ReadOnlyAccess`, que tem escopo de leitura amplo, além das permissões específicas de lock do estado.
+
+A tentativa de criação do projeto de deploy retornou `OAuthProviderException` ao acessar a conexão, apesar
+de ela estar `AVAILABLE`. A simulação IAM permitiu as ações `codeconnections` para a role e negou as ações
+correspondentes `codestar-connections`. As duas variantes foram incluídas no Terraform como correção a
+validar; o erro também pode envolver propagação IAM ou configuração da instalação GitHub.
 
 A sessão atual conseguiu consultar a lista de projetos CodeBuild e roles IAM em Ohio, e o IAM informou
 que o role manager está habilitado. Essas leituras não comprovam autorização para criar o projeto, seu
@@ -44,9 +49,21 @@ inseguro. O projeto CodeBuild, o webhook e os workflows precisam limitar os even
 usar uma role de deploy separada e restrita e proteger o ambiente de deploy. O runner deve ser efêmero.
 Build e testes de pull requests podem continuar em runners hospedados pelo GitHub sem credenciais AWS.
 
-O backend S3 foi inicializado e um plano com lock remoto também listou 92 criações. Ele usou um ARN de
-segredo fictício e não deve ser aplicado. A conexão GitHub permanecia `PENDING` na última verificação;
-autorização, segredo JWT real, proteções do repositório e uma nova revisão do plano continuam pendentes.
+O backend S3 foi inicializado e um plano com lock remoto também listou 92 criações. A conexão GitHub foi
+autorizada, o segredo JWT foi criado e as branches foram protegidas. O provisionamento ainda precisa ser
+reconciliado com o estado recuperado, a política de deploy do Gitflow e os limites da conta.
+
+Na tentativa inicial de provisionamento, credenciais temporárias exportadas expiraram durante a criação
+do grupo de nós. O estado mais recente foi recuperado para o S3 após verificar a mesma linhagem, a versão
+remota e a ausência de processos Terraform ativos; o lock obsoleto foi removido. A tentativa de RDS falhou
+porque o plano gratuito recusou a retenção de sete dias. A configuração agora propõe um dia, ainda sem
+validação na conta. O grupo de nós ficou marcado como `tainted` no estado; verificar seu estado real
+antes de qualquer novo plano ou substituição. Uma leitura do estado usando `credential_process` funcionou;
+a renovação durante uma operação longa ainda precisa ser validada.
+
+O grupo de nós não conseguiu iniciar instâncias `t3.medium`: o Auto Scaling informou que o tipo não é
+elegível ao plano gratuito. A API EC2 listou `t3.small` como elegível e o padrão Terraform foi alterado,
+mas a substituição dos nós e a capacidade de executar aplicação, add-ons e HPA ainda precisam ser validadas.
 
 O módulo EKS habilita IRSA por padrão e tentaria criar outro provedor IAM OIDC. A configuração do projeto
 agora define `enable_irsa = false`; caso um pod precise acessar AWS, avaliar

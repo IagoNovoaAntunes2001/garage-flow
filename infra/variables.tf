@@ -25,7 +25,7 @@ variable "kubernetes_version" {
 
 variable "node_instance_type" {
   type    = string
-  default = "t3.medium"
+  default = "t3.small"
 }
 
 variable "db_instance_class" {
@@ -37,6 +37,16 @@ variable "db_multi_az" {
   description = "Enable RDS standby in another availability zone; increases cost"
   type        = bool
   default     = false
+}
+
+variable "db_backup_retention_days" {
+  description = "Automated backup retention in days; verify the free-plan account limit"
+  type        = number
+  default     = 1
+  validation {
+    condition     = var.db_backup_retention_days >= 0 && var.db_backup_retention_days <= 35 && floor(var.db_backup_retention_days) == var.db_backup_retention_days
+    error_message = "Backup retention must be a whole number between 0 and 35."
+  }
 }
 
 variable "enable_gateway" {

@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "codebuild_deploy" {
     resources = ["*"]
   }
   statement {
-    actions   = ["codeconnections:GetConnection", "codeconnections:GetConnectionToken", "codeconnections:UseConnection"]
+    actions   = ["codeconnections:GetConnection", "codeconnections:GetConnectionToken", "codeconnections:UseConnection", "codestar-connections:GetConnection", "codestar-connections:GetConnectionToken", "codestar-connections:UseConnection"]
     resources = [var.github_connection_arn]
   }
   statement {
@@ -113,7 +113,7 @@ resource "aws_codebuild_project" "deploy_runner" {
 
   artifacts { type = "NO_ARTIFACTS" }
   environment {
-    compute_type                = "BUILD_GENERAL1_MEDIUM"
+    compute_type                = "BUILD_GENERAL1_SMALL"
     image                       = "aws/codebuild/standard:7.0"
     type                        = "LINUX_CONTAINER"
     image_pull_credentials_type = "CODEBUILD"
@@ -150,7 +150,7 @@ resource "aws_codebuild_webhook" "deploy_runner" {
     }
     filter {
       type    = "WORKFLOW_NAME"
-      pattern = "^Deploy to EKS$"
+      pattern = "^Build and test$"
     }
     filter {
       type    = "ACTOR_ACCOUNT_ID"

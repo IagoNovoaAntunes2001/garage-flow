@@ -1,0 +1,24 @@
+name: Branch policy
+
+on:
+  pull_request:
+    types: [opened, reopened, synchronize, edited]
+    branches: [develop, main]
+
+permissions:
+  contents: read
+
+jobs:
+  branch-policy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check source and destination branches
+        env:
+          BASE_BRANCH: ${{ github.base_ref }}
+          SOURCE_BRANCH: ${{ github.head_ref }}
+        run: |
+          case "$BASE_BRANCH:$SOURCE_BRANCH" in
+            main:develop|main:release/*|main:hotfix/*) ;;
+            develop:feature/*|develop:fix/*|develop:bugfix/*|develop:refactor/*|develop:test/*|develop:hotfix/*|develop:release/*|develop:chore/*|develop:docs/*|develop:main) ;;
+            *) echo "Branch $SOURCE_BRANCH cannot be merged into $BASE_BRANCH." >&2; exit 1 ;;
+          esac

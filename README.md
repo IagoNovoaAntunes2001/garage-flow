@@ -11,6 +11,8 @@ Development follows a lightweight Git Flow model integrated with the Spec Kit ro
 
 - `main` contains stable deliverables and `develop` is the integration branch.
 - Capability branches originate from an updated `develop` and return through reviewed pull requests.
+- Successful CI is required for pull requests; once AWS deployment is enabled, publishing a release to `main`
+  starts deployment only after that commit's build, tests, and image scan succeed. `develop` does not deploy.
 - Work is grouped by cohesive capabilities such as `feature/customer-management`; there is no branch per
   individual task.
 - Behavioral work is test-first. A task is checked in `tasks.md` only after its required validation passes.
