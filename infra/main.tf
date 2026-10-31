@@ -35,22 +35,39 @@ module "eks" {
   endpoint_public_access                   = true
   endpoint_private_access                  = true
   endpoint_public_access_cidrs             = var.eks_public_access_cidrs
-  enable_cluster_creator_admin_permissions = true
+  enable_cluster_creator_admin_permissions = false
+  kms_key_administrators                   = [var.cluster_admin_role_arn]
   enable_irsa                              = false
-  access_entries = var.enable_codebuild_runner ? {
-    deploy = {
-      principal_arn = aws_iam_role.codebuild_deploy[0].arn
-      policy_associations = {
-        namespace_admin = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
-          access_scope = {
-            type       = "namespace"
-            namespaces = ["default"]
+  access_entries = merge(
+    {
+      cluster_creator = {
+        principal_arn = var.cluster_admin_role_arn
+        type          = "STANDARD"
+        policy_associations = {
+          admin = {
+            policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+            access_scope = {
+              type = "cluster"
+            }
           }
         }
       }
-    }
-  } : {}
+    },
+    var.enable_codebuild_runner ? {
+      deploy = {
+        principal_arn = aws_iam_role.codebuild_deploy[0].arn
+        policy_associations = {
+          namespace_admin = {
+            policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminPolicy"
+            access_scope = {
+              type       = "namespace"
+              namespaces = ["default"]
+            }
+          }
+        }
+      }
+    } : {},
+  )
   addons = {
     coredns        = {}
     kube-proxy     = {}

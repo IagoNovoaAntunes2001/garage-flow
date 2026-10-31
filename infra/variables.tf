@@ -9,6 +9,15 @@ variable "cluster_name" {
   default     = "garage-flow"
 }
 
+variable "cluster_admin_role_arn" {
+  description = "Stable IAM role ARN used to administer EKS and its KMS key"
+  type        = string
+  validation {
+    condition     = can(regex("^arn:[^:]+:iam::[0-9]{12}:role/.+", var.cluster_admin_role_arn))
+    error_message = "Provide the ARN of a stable IAM role for cluster administration."
+  }
+}
+
 variable "eks_public_access_cidrs" {
   description = "Trusted CIDRs allowed to reach the EKS API endpoint"
   type        = list(string)
