@@ -5,7 +5,7 @@ import com.example.techchallenge.shared.domain.QuotationId
 import java.time.Instant
 
 enum class ApprovalDecision { APPROVED, REJECTED }
-enum class ApprovalChannel { CUSTOMER_ACCESS_TOKEN }
+enum class ApprovalChannel { CUSTOMER_ACCESS_TOKEN, EXTERNAL_INTEGRATION }
 
 data class Approval(
     val id: ApprovalId,
@@ -16,10 +16,10 @@ data class Approval(
     val reason: String?,
 ) {
     companion object {
-        fun approve(quotationId: QuotationId, now: Instant): Approval =
-            Approval(ApprovalId.new(), quotationId, ApprovalDecision.APPROVED, now, ApprovalChannel.CUSTOMER_ACCESS_TOKEN, null)
+        fun approve(quotationId: QuotationId, now: Instant, channel: ApprovalChannel = ApprovalChannel.CUSTOMER_ACCESS_TOKEN): Approval =
+            Approval(ApprovalId.new(), quotationId, ApprovalDecision.APPROVED, now, channel, null)
 
-        fun reject(quotationId: QuotationId, reason: String?, now: Instant): Approval =
-            Approval(ApprovalId.new(), quotationId, ApprovalDecision.REJECTED, now, ApprovalChannel.CUSTOMER_ACCESS_TOKEN, reason?.trim()?.takeIf { it.isNotBlank() })
+        fun reject(quotationId: QuotationId, reason: String?, now: Instant, channel: ApprovalChannel = ApprovalChannel.CUSTOMER_ACCESS_TOKEN): Approval =
+            Approval(ApprovalId.new(), quotationId, ApprovalDecision.REJECTED, now, channel, reason?.trim()?.takeIf { it.isNotBlank() })
     }
 }

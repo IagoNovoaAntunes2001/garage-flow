@@ -1,0 +1,80 @@
+name: Deploy to EKS
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: codebuild-${{ vars.CODEBUILD_PROJECT_NAME }}-${{ github.run_id }}-${{ github.run_attempt }}
+    environment: aws
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: ${{ vars.KUBECTL_VERSION }}
+      - name: Build and test
+        run: ./gradlew --no-daemon build koverVerify
+      - name: Test Lambda authorizer
+        run: python3 -m unittest discover -s infra/authorizer -p 'test_*.py'
+      - uses: aws-actions/amazon-ecr-login@v2
+      - name: Build and publish image
+        env:
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY_URL }}
+          IMAGE_TAG: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          docker build -t "$ECR_REPOSITORY:$IMAGE_TAG" .
+          docker save -o "$RUNNER_TEMP/garage-flow-image.tar" "$ECR_REPOSITORY:$IMAGE_TAG"
+          docker run --rm -v "$RUNNER_TEMP/garage-flow-image.tar:/input/image.tar:ro" ghcr.io/aquasecurity/trivy:0.69.3@sha256:532de2ce287f594fbfbd91853c6d0910517cc87b01501b73b358b3d31b4eb87c image --scanners vuln --severity CRITICAL --exit-code 1 --input /input/image.tar
+          docker push "$ECR_REPOSITORY:$IMAGE_TAG"
+      - name: Check database and configure cluster access
+        env:
+          DB_INSTANCE: ${{ vars.RDS_INSTANCE_ID }}
+          CLUSTER: ${{ vars.EKS_CLUSTER_NAME }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          aws rds wait db-instance-available --db-instance-identifier "$DB_INSTANCE"
+          aws eks update-kubeconfig --name "$CLUSTER" --region "$AWS_REGION"
+      - name: Configure secrets and deploy manifests
+        env:
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
+          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          QUOTATION_INTEGRATION_SECRET: ${{ secrets.QUOTATION_INTEGRATION_SECRET }}
+          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          MAIL_HOST: ${{ secrets.MAIL_HOST }}
+          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
+          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY_URL }}
+          IMAGE_TAG: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
+        run: |
+          set -euo pipefail
+          for name in DATABASE_URL DATABASE_USERNAME DATABASE_PASSWORD JWT_SECRET QUOTATION_INTEGRATION_SECRET; do
+            if [ -z "${!name}" ]; then echo "Missing required secret: $name" >&2; exit 1; fi
+          done
+          if [ "${#JWT_SECRET}" -lt 32 ] || [ "${#QUOTATION_INTEGRATION_SECRET}" -lt 32 ]; then
+            echo "JWT and integration secrets must contain at least 32 characters" >&2
+            exit 1
+          fi
+          umask 077
+          secret_file=$(mktemp)
+          trap 'rm -f "$secret_file"' EXIT
+          for name in DATABASE_URL DATABASE_USERNAME DATABASE_PASSWORD JWT_SECRET QUOTATION_INTEGRATION_SECRET ADMIN_USERNAME ADMIN_PASSWORD MAIL_HOST MAIL_USERNAME MAIL_PASSWORD; do
+            value="${!name}"
+            case "$value" in *$'\n'*|*$'\r'*) echo "Invalid multiline secret: $name" >&2; exit 1;; esac
+            printf '%s=%s\n' "$name" "$value" >> "$secret_file"
+          done
+          kubectl create secret generic garage-flow-secrets --from-env-file="$secret_file" --dry-run=client -o yaml | kubectl apply -f -
+          kubectl apply -f k8s/configmap.yaml -f k8s/service.yaml -f k8s/hpa.yaml
+          kubectl set image --local -f k8s/deployment.yaml backend="$ECR_REPOSITORY:$IMAGE_TAG" -o yaml | kubectl apply -f -
+          kubectl rollout status deployment/garage-flow --timeout=5m

@@ -17,8 +17,7 @@ class DatabaseMigrationIntegrationTest : PostgreSqlIntegrationTest() {
     fun `applies the initial migration to an empty PostgreSQL database`() {
         val applied = flyway.info().applied()
 
-        assertThat(applied).hasSize(1)
-        assertThat(applied.single().version.toString()).isEqualTo("1")
+        assertThat(applied.map { it.version.toString() }).containsExactly("1", "2", "3")
 
         val businessTables = jdbcTemplate.queryForList(
             """
@@ -37,6 +36,7 @@ class DatabaseMigrationIntegrationTest : PostgreSqlIntegrationTest() {
             "approvals",
             "catalog_services",
             "customers",
+            "external_decision_receipts",
             "inventory_items",
             "inventory_movements",
             "quotation_lines",
@@ -44,6 +44,7 @@ class DatabaseMigrationIntegrationTest : PostgreSqlIntegrationTest() {
             "service_order_items",
             "service_order_status_history",
             "service_orders",
+            "status_notifications",
             "vehicles",
         )
     }

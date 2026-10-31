@@ -22,6 +22,13 @@ class ServiceOrderQueryController(
     private val query: QueryServiceOrders,
     private val tracking: TrackServiceOrder,
 ) {
+    @GetMapping("/api/v1/admin/service-orders/active")
+    @SecurityRequirement(name = "bearerAuth")
+    fun active(@RequestParam(defaultValue = "0") page: Int, @RequestParam(defaultValue = "20") size: Int): PageResponse<ServiceOrderDetailResponse> {
+        val result = query.listActive(PageRequestDto.of(page, size))
+        return PageResponse(result.content.map { it.toDetailResponse() }, result.page, result.size, result.totalElements, result.totalPages)
+    }
+
     @GetMapping("/api/v1/admin/service-orders/{serviceOrderId}")
     @SecurityRequirement(name = "bearerAuth")
     fun detail(@PathVariable serviceOrderId: UUID): ServiceOrderDetailResponse =
@@ -34,7 +41,8 @@ class ServiceOrderQueryController(
         @RequestParam(defaultValue = "0") page: Int,
         @RequestParam(defaultValue = "20") size: Int,
     ): PageResponse<ServiceOrderDetailResponse> {
-        val result = query.list(status, PageRequestDto.of(page, size))
+        val request = PageRequestDto.of(page, size)
+        val result = if (status == null) query.listActive(request) else query.list(status, request)
         return PageResponse(result.content.map { it.toDetailResponse() }, result.page, result.size, result.totalElements, result.totalPages)
     }
 

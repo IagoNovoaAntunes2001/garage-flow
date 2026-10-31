@@ -47,3 +47,18 @@ out/
 Thumbs.db
 *.tmp
 *.swp
+__pycache__/
+*.py[cod]
+
+### Terraform and Kubernetes credentials ###
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+.terraform.tfvars*
+.kube/
+kubeconfig*
+*.secret.yaml
+*.secret.yml

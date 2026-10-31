@@ -10,3 +10,17 @@ out/
 .env.*
 !/.env.example
 coverage/
+__pycache__/
+*.py[cod]
+.terraform/
+**/.terraform/
+*.tfstate
+*.tfstate.*
+*.tfplan
+*.tfvars
+*.tfvars.json
+.terraform.tfvars*
+.kube/
+kubeconfig*
+*.secret.yaml
+*.secret.yml
