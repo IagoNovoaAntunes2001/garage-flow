@@ -4,7 +4,7 @@ import com.example.techchallenge.authentication.application.AdministratorBootstr
 import com.example.techchallenge.shared.api.error.ApiError
 import com.example.techchallenge.shared.domain.ClockProvider
 import com.example.techchallenge.shared.infrastructure.observability.CorrelationIdFilter
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import jakarta.servlet.http.HttpServletRequest
 import jakarta.servlet.http.HttpServletResponse
 import org.springframework.boot.context.properties.EnableConfigurationProperties
@@ -55,6 +55,7 @@ class SecurityConfiguration {
                 "/api/v1/auth/token",
                 "/api/v1/tracking/**",
                 "/api/v1/customer-approvals/**",
+                "/api/v1/integrations/quotation-decisions",
                 "/actuator/health",
                 "/actuator/health/**",
                 "/v3/api-docs/**",

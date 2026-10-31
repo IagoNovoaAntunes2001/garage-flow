@@ -15,4 +15,7 @@ class QueryServiceOrders(private val orders: ServiceOrderRepository) {
 
     @Transactional(readOnly = true)
     fun list(status: ServiceOrderStatus?, page: PageRequestDto) = orders.list(status, page.page, page.size)
+
+    @Transactional(readOnly = true)
+    fun listActive(page: PageRequestDto) = orders.listActive(page.page, page.size)
 }

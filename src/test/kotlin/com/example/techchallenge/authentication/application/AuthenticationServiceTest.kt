@@ -17,7 +17,7 @@ class AuthenticationServiceTest {
     private val administrator = Administrator.create(
         id = AdministratorId.new(),
         username = "workshop-admin",
-        passwordHash = passwordEncoder.encode("correct-password"),
+        passwordHash = requireNotNull(passwordEncoder.encode("correct-password")),
         now = Instant.parse("2026-08-31T12:00:00Z"),
     )
 

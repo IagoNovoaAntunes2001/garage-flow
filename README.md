@@ -11,6 +11,8 @@ Development follows a lightweight Git Flow model integrated with the Spec Kit ro
 
 - `main` contains stable deliverables and `develop` is the integration branch.
 - Capability branches originate from an updated `develop` and return through reviewed pull requests.
+- Successful CI is required for pull requests; once AWS deployment is enabled, publishing a release to `main`
+  starts deployment only after that commit's build, tests, and image scan succeed. `develop` does not deploy.
 - Work is grouped by cohesive capabilities such as `feature/customer-management`; there is no branch per
   individual task.
 - Behavioral work is test-first. A task is checked in `tasks.md` only after its required validation passes.
@@ -34,10 +36,14 @@ project foundation, authentication, customer and vehicle management, catalog, in
 approval workflows, tracking, metrics, API quality, testing, operations, documentation, security analysis,
 and finally `release/1.0.0`.
 
+Phase 2 work is tracked separately in [the Phase 2 task list](specs/002-evolucao-fase-2/tasks.md).
+It adds prioritized service-order queries, external quotation decisions, status notifications, Kubernetes,
+Terraform, and deployment automation. The infrastructure and delivery workflow remain in progress.
+
 ## Technology baseline
 
 - Kotlin targeting JVM 17
-- Spring Boot 3.x with Spring Web, Data JPA, Security, and JWT resource server
+- Spring Boot 4.x with Spring Web MVC, Data JPA, Security, and JWT resource server
 - PostgreSQL with Flyway migrations
 - JUnit 5 and PostgreSQL Testcontainers
 - Gradle and Kover
@@ -95,6 +101,30 @@ Swagger UI is available in the `local` profile at `/swagger-ui.html`. Health is 
 Administrative endpoints under `/api/v1/admin/**` require a Bearer JWT from `POST /api/v1/auth/token`.
 Customer approval and tracking endpoints use the `X-Service-Order-Token` header and expose only restricted
 ServiceOrder information.
+
+External quotation decisions use `POST /api/v1/integrations/quotation-decisions` with an
+`X-Integration-Token` matching `QUOTATION_INTEGRATION_SECRET` (at least 32 characters). An empty secret
+disables access. Use TLS for exposed endpoints. Configure the secret outside version control. The
+administrative order list defaults to open orders sorted by status and age; an explicit status filter
+allows historical queries.
+
+Status notifications are queued transactionally. Set `NOTIFICATIONS_ENABLED=true` and configure SMTP to
+send them; the Compose development environment includes Mailpit at `http://localhost:8025`. A customer
+without an email produces a failed notification for investigation. SMTP delivery is at least once, so a
+retry after a delivery confirmation failure can duplicate a message.
+The worker attempts delivery at most five times, then retains the notification as `FAILED`; operators must
+investigate and explicitly requeue it after correcting the cause. Logs identify the notification and error
+type without exposing its recipient or message. The mail server's availability does not make the API health
+check fail; monitor failed or pending records separately.
+
+## Phase 2 infrastructure
+
+[Proposed architecture](docs/architecture/phase-2-proposed.md) shows application components, planned AWS
+resources, and deployment flow. [Terraform instructions](infra/README.md) describe the proposed EKS, RDS,
+VPC, and ECR resources and their prerequisites. Kubernetes manifests are in `k8s/`; create the Secret
+outside version control before applying them. AWS provisioning, deployment automation, and the final
+demonstration remain to be validated. The API specification is available in
+[the OpenAPI contract](specs/001-repair-shop-mvp/contracts/openapi.yaml), and Swagger is available locally.
 
 ## ServiceOrder lifecycle
 

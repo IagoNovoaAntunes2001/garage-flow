@@ -334,10 +334,35 @@ paths:
         '404': { $ref: '#/components/responses/NotFound' }
         '409': { $ref: '#/components/responses/Conflict' }
         '422': { $ref: '#/components/responses/Unprocessable' }
+  /integrations/quotation-decisions:
+    post:
+      tags: [Service Orders]
+      operationId: receiveExternalQuotationDecision
+      security: [{ integrationToken: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [eventId, serviceOrderId, quotationVersion, decision]
+              properties:
+                eventId: { type: string, minLength: 1, maxLength: 150 }
+                serviceOrderId: { type: string, format: uuid }
+                quotationVersion: { type: integer, minimum: 1 }
+                decision: { type: string, enum: [APPROVED, REJECTED] }
+                reason: { type: string, nullable: true, maxLength: 500 }
+      responses:
+        '200': { description: Decision recorded or identical event already processed }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthorized' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409': { $ref: '#/components/responses/Conflict' }
   /admin/service-orders:
     get:
       tags: [Service Orders]
       operationId: listServiceOrders
+      description: Without a status filter, returns prioritized active orders; an explicit status filter permits historical lookup.
       parameters:
         - { $ref: '#/components/parameters/Page' }
         - { $ref: '#/components/parameters/Size' }
@@ -365,6 +390,20 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
         '404': { $ref: '#/components/responses/NotFound' }
         '422': { $ref: '#/components/responses/Unprocessable' }
+  /admin/service-orders/active:
+    get:
+      tags: [Service Orders]
+      operationId: listActiveServiceOrders
+      description: Active orders ordered by execution, approval, diagnosis and received, then oldest first.
+      parameters:
+        - { $ref: '#/components/parameters/Page' }
+        - { $ref: '#/components/parameters/Size' }
+      responses:
+        '200':
+          description: Prioritized active service orders
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/ServiceOrderPage' }
   /admin/service-orders/{serviceOrderId}:
     parameters:
       - { $ref: '#/components/parameters/ServiceOrderId' }
@@ -489,6 +528,10 @@ paths:
         '400': { $ref: '#/components/responses/BadRequest' }
 components:
   securitySchemes:
+    integrationToken:
+      type: apiKey
+      in: header
+      name: X-Integration-Token
     bearerAuth:
       type: http
       scheme: bearer

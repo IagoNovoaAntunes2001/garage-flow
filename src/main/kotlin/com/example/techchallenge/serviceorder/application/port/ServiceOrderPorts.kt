@@ -12,6 +12,7 @@ interface ServiceOrderRepository {
     fun findByIdForUpdate(id: ServiceOrderId): ServiceOrder?
     fun findByTrackingHash(id: ServiceOrderId, trackingTokenHash: String, now: Instant): ServiceOrder?
     fun list(status: ServiceOrderStatus?, page: Int, size: Int): PageResponse<ServiceOrder>
+    fun listActive(page: Int, size: Int): PageResponse<ServiceOrder>
     fun executionHistory(from: Instant, to: Instant): List<OrderExecutionHistory>
 }
 

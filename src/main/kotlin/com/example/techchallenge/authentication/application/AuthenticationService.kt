@@ -56,7 +56,7 @@ class AdministratorBootstrap(
             Administrator.create(
                 id = AdministratorId.new(),
                 username = properties.username,
-                passwordHash = passwordEncoder.encode(properties.password),
+                passwordHash = requireNotNull(passwordEncoder.encode(properties.password)),
                 now = clockProvider.now(),
             ),
         )

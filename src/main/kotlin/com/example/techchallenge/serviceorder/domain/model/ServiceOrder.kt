@@ -48,20 +48,20 @@ class ServiceOrder private constructor(
         )
     }
 
-    fun approveQuotation(versionNumber: Int, now: Instant): ServiceOrder {
+    fun approveQuotation(versionNumber: Int, now: Instant, channel: ApprovalChannel = ApprovalChannel.CUSTOMER_ACCESS_TOKEN): ServiceOrder {
         val quotation = currentPendingQuotation(versionNumber)
         return copy(
             quotations = quotations.map { if (it.id == quotation.id) it.approve() else it },
-            approvals = approvals + Approval.approve(quotation.id, now),
+            approvals = approvals + Approval.approve(quotation.id, now, channel),
             updatedAt = now,
         )
     }
 
-    fun rejectQuotation(versionNumber: Int, reason: String?, now: Instant): ServiceOrder {
+    fun rejectQuotation(versionNumber: Int, reason: String?, now: Instant, channel: ApprovalChannel = ApprovalChannel.CUSTOMER_ACCESS_TOKEN): ServiceOrder {
         val quotation = currentPendingQuotation(versionNumber)
         return copy(
             quotations = quotations.map { if (it.id == quotation.id) it.reject() else it },
-            approvals = approvals + Approval.reject(quotation.id, reason, now),
+            approvals = approvals + Approval.reject(quotation.id, reason, now, channel),
             updatedAt = now,
         )
     }
