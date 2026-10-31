@@ -27,7 +27,7 @@ conectar CodeBuild ao repositório, a criação das roles, as políticas efetiva
 com o EKS e os custos devem ser verificados antes de considerar essa alternativa funcional. Não copiar a
 sessão pessoal do AWS CLI para os secrets do repositório.
 
-A configuração opcional em `infra/codebuild.tf` e o workflow manual de deploy preparam essa alternativa.
+A configuração opcional em `infra/codebuild.tf` e o job de deploy após CI bem-sucedido em `main` preparam essa alternativa.
 Um segundo runner, definido em `infra/codebuild-plan.tf`, prepara uma identidade distinta para o plano
 Terraform. Os dois fluxos precisam ser validados na AWS. A role de planejamento usa a política gerenciada
 AWS `ReadOnlyAccess`, que tem escopo de leitura amplo, além das permissões específicas de lock do estado.

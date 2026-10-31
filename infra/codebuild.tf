@@ -150,7 +150,7 @@ resource "aws_codebuild_webhook" "deploy_runner" {
     }
     filter {
       type    = "WORKFLOW_NAME"
-      pattern = "^Deploy to EKS$"
+      pattern = "^Build and test$"
     }
     filter {
       type    = "ACTOR_ACCOUNT_ID"
