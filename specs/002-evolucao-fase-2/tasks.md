@@ -72,9 +72,9 @@
 - [ ] T035 Verificar elegibilidade e créditos da conta AWS, estimar custos e documentar remoção e retenção dos recursos em `infra/README.md` antes de aplicar o plano.
 - [ ] T036 Validar conexão GitHub App, permissões e filtros do runner temporário CodeBuild para GitHub Actions; substituir a dependência de OIDC no planejamento Terraform com identidade própria e registrar evidências.
 
-- [ ] T037 Provisionar identidade Pod Identity, descoberta e runner dedicado do Karpenter com Terraform e plano revisado.
-- [ ] T038 Instalar Karpenter por GitHub Actions na main, validar NodePool e EC2NodeClass.
-- [ ] T039 Demonstrar criação e consolidação de um nó adicional e registrar custos e evidências.
+- [X] T037 Provisionar identidade Pod Identity, descoberta e runner dedicado do Karpenter com Terraform e plano revisado.
+- [X] T038 Instalar Karpenter por GitHub Actions na main, validar NodePool e EC2NodeClass.
+- [X] T039 Demonstrar criação e consolidação de um nó adicional e registrar custos e evidências.
 
 ## Dependências e execução
 
