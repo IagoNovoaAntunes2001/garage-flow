@@ -31,6 +31,7 @@ jobs:
         env:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
           TF_VAR_kubernetes_version: ${{ vars.EKS_KUBERNETES_VERSION }}
+          TF_VAR_cluster_admin_role_arn: ${{ vars.CLUSTER_ADMIN_ROLE_ARN }}
           TF_VAR_eks_public_access_cidrs: ${{ vars.EKS_PUBLIC_ACCESS_CIDRS }}
           TF_VAR_enable_gateway: 'true'
           TF_VAR_jwt_secret_arn: ${{ vars.JWT_SECRET_ARN }}
