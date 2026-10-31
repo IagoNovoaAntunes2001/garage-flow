@@ -71,6 +71,8 @@ private class ApprovalFakeOrderRepository(private var order: ServiceOrder) : Ser
     override fun list(status: ServiceOrderStatus?, page: Int, size: Int): PageResponse<ServiceOrder> =
         PageResponse(listOf(order), page, size, 1, 1)
 
+    override fun listActive(page: Int, size: Int): PageResponse<ServiceOrder> = list(null, page, size)
+
     override fun executionHistory(from: Instant, to: Instant): List<OrderExecutionHistory> =
         listOf(OrderExecutionHistory(order.id, order.statusHistory.map { ExecutionHistoryEvent(it.toStatus, it.occurredAt) }))
 }

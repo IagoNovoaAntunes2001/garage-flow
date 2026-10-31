@@ -39,7 +39,7 @@ data class PageResponse<T>(
     val totalPages: Int,
 )
 
-fun <T, R> Page<T>.toPageResponse(transform: (T) -> R): PageResponse<R> = PageResponse(
+fun <T : Any, R> Page<T>.toPageResponse(transform: (T) -> R): PageResponse<R> = PageResponse(
     content = content.map(transform),
     page = number,
     size = size,

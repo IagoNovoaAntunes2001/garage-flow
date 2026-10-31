@@ -15,11 +15,14 @@ class OpenApiConfiguration {
 
     @Bean
     fun openApi(): OpenAPI = OpenAPI()
-        .info(Info().title("Garage Flow API").version("1.0.0").description("Automotive repair shop Phase 1 MVP backend"))
+        .info(Info().title("Garage Flow API").version("1.0.0").description("Automotive repair shop backend"))
         .components(
             Components().addSecuritySchemes(
                 "bearerAuth",
                 SecurityScheme().type(SecurityScheme.Type.HTTP).scheme("bearer").bearerFormat("JWT"),
+            ).addSecuritySchemes(
+                "integrationToken",
+                SecurityScheme().type(SecurityScheme.Type.APIKEY).`in`(SecurityScheme.In.HEADER).name("X-Integration-Token"),
             ).schemas(apiErrorSchema),
         )
 }

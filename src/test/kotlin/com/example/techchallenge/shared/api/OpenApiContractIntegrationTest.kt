@@ -1,12 +1,12 @@
 package com.example.techchallenge.shared.api
 
 import com.example.techchallenge.support.PostgreSqlIntegrationTest
-import com.fasterxml.jackson.databind.ObjectMapper
+import tools.jackson.databind.ObjectMapper
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
 import org.springframework.beans.factory.annotation.Autowired
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
+import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
@@ -32,6 +32,9 @@ class OpenApiContractIntegrationTest : PostgreSqlIntegrationTest() {
         assertTrue(root.at("/paths/~1api~1v1~1admin~1services/post/security/0/bearerAuth").isArray)
         assertTrue(root.at("/paths/~1api~1v1~1admin~1inventory-items/post/security/0/bearerAuth").isArray)
         assertTrue(root.at("/paths/~1api~1v1~1admin~1service-orders/post/security/0/bearerAuth").isArray)
+        assertTrue(root.at("/paths/~1api~1v1~1admin~1service-orders~1active/get/security/0/bearerAuth").isArray)
+        assertTrue(root.at("/paths/~1api~1v1~1integrations~1quotation-decisions/post/security/0/integrationToken").isArray)
+        assertTrue(root.at("/components/securitySchemes/integrationToken/name").asText() == "X-Integration-Token")
         assertTrue(root.at("/paths/~1api~1v1~1admin~1service-orders~1{serviceOrderId}~1execution~1start/post/security/0/bearerAuth").isArray)
         assertTrue(root.at("/paths/~1api~1v1~1admin~1metrics~1execution-time/get/security/0/bearerAuth").isArray)
         assertFalse(root.at("/paths/~1api~1v1~1tracking~1service-orders~1{serviceOrderId}/get").has("security"))

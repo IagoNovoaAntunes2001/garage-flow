@@ -42,6 +42,7 @@ import org.springframework.data.jpa.repository.JpaRepository
 import org.springframework.data.jpa.repository.Lock
 import org.springframework.data.jpa.repository.Query
 import org.springframework.data.repository.query.Param
+import org.springframework.jdbc.core.JdbcTemplate
 import org.springframework.stereotype.Repository
 import java.math.BigDecimal
 import java.time.Instant
@@ -138,6 +139,15 @@ interface SpringDataServiceOrderRepository : JpaRepository<ServiceOrderEntity, U
     fun findAllByStatus(status: ServiceOrderStatus, pageable: Pageable): Page<ServiceOrderEntity>
     fun findByIdAndTrackingTokenHashAndTrackingRevokedAtIsNull(id: UUID, trackingTokenHash: String): ServiceOrderEntity?
 
+    @Query(
+        value = """SELECT * FROM service_orders WHERE status IN ('IN_EXECUTION', 'AWAITING_APPROVAL', 'IN_DIAGNOSIS', 'RECEIVED')
+            ORDER BY CASE status WHEN 'IN_EXECUTION' THEN 0 WHEN 'AWAITING_APPROVAL' THEN 1
+                WHEN 'IN_DIAGNOSIS' THEN 2 ELSE 3 END, created_at ASC, id ASC""",
+        countQuery = """SELECT COUNT(*) FROM service_orders WHERE status IN ('IN_EXECUTION', 'AWAITING_APPROVAL', 'IN_DIAGNOSIS', 'RECEIVED')""",
+        nativeQuery = true,
+    )
+    fun findActive(pageable: Pageable): Page<ServiceOrderEntity>
+
     @Lock(LockModeType.PESSIMISTIC_WRITE)
     @Query("select o from ServiceOrderEntity o where o.id = :id")
     fun findLocked(@Param("id") id: UUID): ServiceOrderEntity?
@@ -191,14 +201,27 @@ class ServiceOrderPersistenceAdapter(
     private val quotationLines: SpringDataQuotationLineRepository,
     private val approvals: SpringDataApprovalRepository,
     private val history: SpringDataStatusHistoryRepository,
+    private val jdbc: JdbcTemplate,
 ) : ServiceOrderRepository {
     override fun save(order: ServiceOrder): ServiceOrder {
+        val knownHistory = history.findAllByServiceOrderIdOrderByOccurredAtAsc(order.id.value).map { it.id }.toSet()
+        val newHistory = order.statusHistory.filter { it.id.value !in knownHistory }
         orders.save(order.toEntity())
         items.saveAll(order.items.map { it.toEntity(order.id.value) })
         quotations.saveAll(order.quotations.map { it.toEntity(order.id.value) })
         quotationLines.saveAll(order.quotations.flatMap { quotation -> quotation.lines.map { it.toEntity(quotation.id.value) } })
         approvals.saveAll(order.approvals.map { it.toEntity() })
-        history.saveAll(order.statusHistory.map { it.toEntity(order.id.value) })
+        history.saveAllAndFlush(order.statusHistory.map { it.toEntity(order.id.value) })
+        newHistory.forEach { entry ->
+            jdbc.update(
+                """INSERT INTO status_notifications (id, service_order_id, history_id, status, recipient, state, next_attempt_at, last_error, created_at)
+                   SELECT ?, ?, ?, ?, c.email, CASE WHEN c.email IS NULL THEN 'FAILED' ELSE 'PENDING' END,
+                          ?, CASE WHEN c.email IS NULL THEN 'Recipient missing' ELSE NULL END, ?
+                   FROM customers c WHERE c.id = ? ON CONFLICT (history_id) DO NOTHING""",
+                UUID.randomUUID(), order.id.value, entry.id.value, entry.toStatus.name,
+                java.sql.Timestamp.from(entry.occurredAt), java.sql.Timestamp.from(entry.occurredAt), order.customerId.value,
+            )
+        }
         return findById(order.id) ?: order
     }
 
@@ -213,6 +236,11 @@ class ServiceOrderPersistenceAdapter(
     override fun list(status: ServiceOrderStatus?, page: Int, size: Int): PageResponse<ServiceOrder> {
         val pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"))
         val result = if (status == null) orders.findAll(pageable) else orders.findAllByStatus(status, pageable)
+        return PageResponse(result.content.toDomains(), result.number, result.size, result.totalElements, result.totalPages)
+    }
+
+    override fun listActive(page: Int, size: Int): PageResponse<ServiceOrder> {
+        val result = orders.findActive(PageRequest.of(page, size))
         return PageResponse(result.content.toDomains(), result.number, result.size, result.totalElements, result.totalPages)
     }
 

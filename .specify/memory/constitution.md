@@ -1,25 +1,15 @@
 <!--
 Sync Impact Report
-- Version change: 1.0.0 -> 2.0.0
-- Modified principles:
-  - I. Maintainable, Explicit Code -> III. Code Quality and Maintainability
-  - II. Tests Define Confidence -> IV. Testing Standards
-  - III. Consistent User Experience -> VI. Consistent REST APIs
-  - IV. Measured Performance -> VIII. Observability and Performance
-- Added principles:
-  - I. Domain-Driven Design First
-  - II. Layered Modular Monolith
-  - V. Security by Design
-  - VII. Service Order Integrity
-  - IX. Reproducible Development Environment
-  - X. MVP Scope Discipline
-- Added sections:
-  - Architecture and API Constraints
-  - Delivery and Quality Gates
-- Removed sections:
-  - Engineering Standards (requirements incorporated into the new principles and constraints)
-  - Delivery and Review Gates (replaced by Delivery and Quality Gates)
-- Follow-up TODOs: none
+- Version change: 2.0.0 -> 3.0.0
+- Modified principles: II. Layered Modular Monolith; IX. Reproducible Development Environment;
+  X. MVP Scope Discipline
+- Added sections: none
+- Removed sections: none
+- Phase 2 amends principles II, IX and X to permit Kubernetes, Terraform and CI/CD.
+- Motivation: Phase 2 requires orchestration, provisioning and automated delivery.
+- Migration: retain monolith and domain invariants; add deployment artifacts and documentation.
+- Approval: user approved the amendment on 2026-10-30.
+- Follow-up: select deployment environment and credentials during implementation.
 -->
 # Automotive Repair Shop Backend Constitution
 
@@ -39,10 +29,9 @@ The application MUST be delivered as a modular monolith with distinct domain, ap
 infrastructure, and API/interface layers. Dependencies MUST point inward toward domain rules: API and
 infrastructure MAY depend on application contracts, and application code MAY depend on the domain, but
 the reverse dependencies MUST NOT occur. Module boundaries MUST reflect business capabilities and MUST
-communicate through explicit contracts rather than another module's internal implementation. The MVP
-MUST NOT introduce microservices or distributed-system infrastructure without an approved requirement
-that cannot be satisfied by the monolith. This architecture minimizes operational cost while preserving
-clear paths for future evolution.
+communicate through explicit contracts rather than another module's internal implementation. The application
+MUST remain a monolith. Kubernetes, Terraform and CI/CD required by Phase 2 MAY operate it without
+changing domain boundaries. Microservices require a separately approved requirement.
 
 ### III. Code Quality and Maintainability
 Code MUST favor simple, explicit solutions over clever or speculative abstractions. SOLID principles
@@ -111,13 +100,15 @@ startup behavior. README.md MUST document prerequisites, configuration, build, t
 startup, health verification, and shutdown commands. Secrets or machine-specific paths MUST NOT be
 embedded in container definitions. A new developer MUST be able to clone the repository and start the
 system by following only the documented steps; those steps MUST be verified whenever environment or
-dependency configuration changes.
+dependency configuration changes. Phase 2 MUST provide documented Kubernetes manifests, Terraform
+provisioning for cluster and database, and CI/CD build, test and deployment steps.
 
 ### X. MVP Scope Discipline
 Implementation MUST prioritize only capabilities required by the Tech Challenge and its accepted
-feature specifications. Microservices, event brokers, frontend applications, cloud infrastructure, and
-other operational components MUST NOT be introduced unless a concrete approved requirement demonstrates
-their necessity. Extension points MUST be based on an identified variation or boundary, not a predicted
+feature specifications. Phase 2 explicitly requires Kubernetes, infrastructure as code and CI/CD, including
+cluster and database provisioning locally or in the cloud. Microservices, event brokers, frontend
+applications and other operational components MUST NOT be introduced unless an approved requirement
+demonstrates their necessity. Extension points MUST be based on an identified variation or boundary, not a predicted
 future need. Proposals that increase architectural or operational complexity MUST document the current
 problem, simpler alternatives considered, and measurable benefit. This protects delivery speed without
 preventing later evolution through clean domain and module boundaries.
@@ -167,4 +158,4 @@ version, and Last Amended date. Reviewers MUST perform a constitution compliance
 and pull request. Non-compliance MUST be corrected before merge or recorded through the explicit,
 time-bounded exception process defined above.
 
-**Version**: 2.0.0 | **Ratified**: 2026-08-31 | **Last Amended**: 2026-08-31
+**Version**: 3.0.0 | **Ratified**: 2026-08-31 | **Last Amended**: 2026-10-30

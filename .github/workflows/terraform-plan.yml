@@ -1,0 +1,39 @@
+name: Plan AWS infrastructure
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  id-token: write
+
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    environment: aws-plan
+    defaults:
+      run:
+        working-directory: infra
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.13.5
+      - uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: ${{ vars.AWS_PLAN_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+      - name: Initialize and validate
+        env:
+          STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          terraform fmt -check
+          terraform init -input=false -backend-config="bucket=$STATE_BUCKET" -backend-config="key=garage-flow/terraform.tfstate" -backend-config="region=$AWS_REGION" -backend-config="use_lockfile=true"
+          terraform validate
+      - name: Plan cluster and database
+        env:
+          TF_VAR_aws_region: ${{ vars.AWS_REGION }}
+          TF_VAR_kubernetes_version: ${{ vars.EKS_KUBERNETES_VERSION }}
+          TF_VAR_eks_public_access_cidrs: ${{ vars.EKS_PUBLIC_ACCESS_CIDRS }}
+        run: terraform plan -input=false -no-color

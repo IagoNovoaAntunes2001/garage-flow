@@ -1,0 +1,29 @@
+name: Build and test
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - uses: gradle/actions/setup-gradle@v4
+      - name: Build and test
+        run: ./gradlew --no-daemon build koverVerify
+      - name: Test Lambda authorizer
+        run: python3 -m unittest discover -s infra/authorizer -p 'test_*.py'
+      - name: Build container image
+        run: docker build -t garage-flow:ci .
+      - name: Scan image for critical vulnerabilities
+        run: |
+          docker save -o "$RUNNER_TEMP/garage-flow-image.tar" garage-flow:ci
+          docker run --rm -v "$RUNNER_TEMP/garage-flow-image.tar:/input/image.tar:ro" ghcr.io/aquasecurity/trivy:0.69.3@sha256:532de2ce287f594fbfbd91853c6d0910517cc87b01501b73b358b3d31b4eb87c image --scanners vuln --severity CRITICAL --exit-code 1 --input /input/image.tar
