@@ -61,6 +61,10 @@ validação na conta. O grupo de nós ficou marcado como `tainted` no estado; ve
 antes de qualquer novo plano ou substituição. Uma leitura do estado usando `credential_process` funcionou;
 a renovação durante uma operação longa ainda precisa ser validada.
 
+O grupo de nós não conseguiu iniciar instâncias `t3.medium`: o Auto Scaling informou que o tipo não é
+elegível ao plano gratuito. A API EC2 listou `t3.small` como elegível e o padrão Terraform foi alterado,
+mas a substituição dos nós e a capacidade de executar aplicação, add-ons e HPA ainda precisam ser validadas.
+
 O módulo EKS habilita IRSA por padrão e tentaria criar outro provedor IAM OIDC. A configuração do projeto
 agora define `enable_irsa = false`; caso um pod precise acessar AWS, avaliar
 [EKS Pod Identity](https://docs.aws.amazon.com/eks/latest/userguide/pod-identities.html). Essa escolha

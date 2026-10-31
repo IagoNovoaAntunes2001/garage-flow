@@ -25,7 +25,7 @@ variable "kubernetes_version" {
 
 variable "node_instance_type" {
   type    = string
-  default = "t3.medium"
+  default = "t3.small"
 }
 
 variable "db_instance_class" {
