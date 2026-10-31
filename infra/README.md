@@ -57,7 +57,7 @@ kubectl top pods
 kubectl port-forward service/garage-flow 8080:80
 ```
 
-O arquivo de secrets deve ter as chaves exemplificadas em `k8s/secret.yaml.example`, ser protegido e não ser versionado. O Service é interno; a exposição externa e TLS exigem configuração adicional. O uso do HPA depende das métricas e de capacidade suficiente nos nós.
+O arquivo de secrets deve ter as chaves exemplificadas em `k8s/secret.yaml.example`, ser protegido e não ser versionado. O Service é interno; a exposição externa e TLS exigem configuração adicional. O HPA considera 70% da CPU e 125% da memória solicitada pelos pods (640 MiB para a solicitação atual de 512 MiB), com duas a quatro réplicas; ajustar os alvos após medir a carga. A escala depende das métricas e de capacidade suficiente nos nós.
 
 Há cobrança por EKS, nós EC2, NAT, RDS, armazenamento, segredos e tráfego. Planejar remoção após a demonstração sem excluir dados necessários: a proteção de exclusão do RDS e o snapshot final exigem decisão explícita. Nenhum recurso é criado apenas por adicionar estes arquivos.
 
