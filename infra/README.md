@@ -41,6 +41,8 @@ No repositório da demonstração, o ambiente `aws` foi criado com uma política
 
 O workflow verifica se o RDS já provisionado está disponível; ainda não provisiona o banco. As migrações são executadas na inicialização da aplicação. O primeiro administrador e a ativação de SMTP precisam ser planejados antes do primeiro deploy; o manifesto mantém bootstrap e notificações desativados por padrão. O gate de varredura permanece ativo; a última análise local está em `docs/security/phase-2-image-scan.md`.
 
+Ambos os runners usam `BUILD_GENERAL1_SMALL`, sujeito à franquia mensal aplicável do CodeBuild; uso excedente e serviços associados podem consumir créditos. A capacidade desse tamanho para construir e analisar a imagem ainda precisa ser verificada na conta.
+
 O workflow manual `.github/workflows/terraform-plan.yml` apenas gera um plano para revisão, no ambiente `aws-plan` e usando um projeto CodeBuild e uma role separados do deploy. Configure `CODEBUILD_PLAN_PROJECT_NAME`, `AWS_REGION`, `TF_STATE_BUCKET`, `EKS_KUBERNETES_VERSION`, `EKS_PUBLIC_ACCESS_CIDRS` (lista JSON), `JWT_SECRET_ARN`, `CODECONNECTION_ARN` e `DEPLOY_ACTOR_ID`. A role usa a política gerenciada AWS `ReadOnlyAccess` e permissões de lock no estado; seu escopo de leitura é amplo e precisa ser revisado para produção. O endpoint público do EKS fica limitado aos CIDRs configurados; mantenha-os atualizados. O projeto e o fluxo ainda precisam ser criados e testados. A aplicação do plano e o provisionamento do banco ainda não estão automatizados no CI/CD.
 
 Para deploy manual, com uma imagem já publicada e acesso ao cluster configurado:
