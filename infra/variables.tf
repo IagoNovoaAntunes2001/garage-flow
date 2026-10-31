@@ -39,6 +39,16 @@ variable "db_multi_az" {
   default     = false
 }
 
+variable "db_backup_retention_days" {
+  description = "Automated backup retention in days; verify the free-plan account limit"
+  type        = number
+  default     = 1
+  validation {
+    condition     = var.db_backup_retention_days >= 0 && var.db_backup_retention_days <= 35 && floor(var.db_backup_retention_days) == var.db_backup_retention_days
+    error_message = "Backup retention must be a whole number between 0 and 35."
+  }
+}
+
 variable "enable_gateway" {
   description = "Create API Gateway, Lambda authorizer, VPC link and internal NLB"
   type        = bool

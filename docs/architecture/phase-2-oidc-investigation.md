@@ -49,9 +49,17 @@ inseguro. O projeto CodeBuild, o webhook e os workflows precisam limitar os even
 usar uma role de deploy separada e restrita e proteger o ambiente de deploy. O runner deve ser efêmero.
 Build e testes de pull requests podem continuar em runners hospedados pelo GitHub sem credenciais AWS.
 
-O backend S3 foi inicializado e um plano com lock remoto também listou 92 criações. Ele usou um ARN de
-segredo fictício e não deve ser aplicado. A conexão GitHub permanecia `PENDING` na última verificação;
-autorização, segredo JWT real, proteções do repositório e uma nova revisão do plano continuam pendentes.
+O backend S3 foi inicializado e um plano com lock remoto também listou 92 criações. A conexão GitHub foi
+autorizada, o segredo JWT foi criado e as branches foram protegidas. O provisionamento ainda precisa ser
+reconciliado com o estado recuperado, a política de deploy do Gitflow e os limites da conta.
+
+Na tentativa inicial de provisionamento, credenciais temporárias exportadas expiraram durante a criação
+do grupo de nós. O estado mais recente foi recuperado para o S3 após verificar a mesma linhagem, a versão
+remota e a ausência de processos Terraform ativos; o lock obsoleto foi removido. A tentativa de RDS falhou
+porque o plano gratuito recusou a retenção de sete dias. A configuração agora propõe um dia, ainda sem
+validação na conta. O grupo de nós ficou marcado como `tainted` no estado; verificar seu estado real
+antes de qualquer novo plano ou substituição. Uma leitura do estado usando `credential_process` funcionou;
+a renovação durante uma operação longa ainda precisa ser validada.
 
 O módulo EKS habilita IRSA por padrão e tentaria criar outro provedor IAM OIDC. A configuração do projeto
 agora define `enable_irsa = false`; caso um pod precise acessar AWS, avaliar

@@ -1,6 +1,6 @@
 # Infraestrutura AWS — proposta inicial
 
-O Terraform descreve VPC em duas zonas, sub-redes privadas e públicas, um NAT gateway, EKS com dois nós gerenciados, RDS PostgreSQL privado com backups e senha mestra gerenciada pela AWS, e repositório ECR. A opção padrão de RDS é Single-AZ e um único NAT é um ponto de falha; habilitar Multi-AZ e redundância de rede exige custo adicional. Esta configuração ainda precisa de validação e revisão antes do uso.
+O Terraform descreve VPC em duas zonas, sub-redes privadas e públicas, um NAT gateway, EKS com dois nós gerenciados, RDS PostgreSQL privado e senha mestra gerenciada pela AWS, e repositório ECR. A opção padrão de RDS é Single-AZ e um único NAT é um ponto de falha; habilitar Multi-AZ e redundância de rede exige custo adicional. O período de backup automático padrão é de um dia (`db_backup_retention_days`); sete dias foram recusados nesta conta gratuita, e o novo valor ainda requer validação. Zero desativa backups automáticos e recuperação pontual. Esta configuração ainda precisa de validação e revisão antes do uso.
 
 O módulo EKS está configurado com `enable_irsa = false`, pois esta conta bloqueou provedores OIDC do IAM.
 Isso não configura credenciais para workloads: antes de conceder acesso AWS a pods, avaliar EKS Pod Identity
@@ -27,7 +27,7 @@ terraform apply deployment.tfplan
 
 No projeto de demonstração, foi criado manualmente o bucket `garage-flow-tfstate-361659539017-us-east-2` em Ohio, com versionamento, criptografia SSE-S3, bloqueio de acesso público e política que exige HTTPS. A conexão `garage-flow-github` também foi criada separadamente e precisa ser autorizada no console. Esses recursos de bootstrap não são destruídos pelo Terraform deste diretório e devem ser incluídos no encerramento do ambiente.
 
-Para esta sessão autenticada com `aws login`, o backend S3 não conseguiu ler diretamente o perfil. Uma alternativa local é carregar credenciais temporárias apenas no ambiente do processo com `eval "$(aws configure export-credentials --profile garage-flow --format env)"` antes dos comandos Terraform. Não registrar a saída, gravá-la em arquivo nem enviá-la ao GitHub. Após renovar a sessão, repita o comando no terminal apropriado.
+Para esta conta autenticada com `aws login`, o backend S3 não conseguiu ler diretamente o perfil. Exportar as credenciais como variáveis de ambiente produz credenciais estáticas temporárias: uma operação longa expirou e o estado precisou ser recuperado. Use um perfil com `credential_process` que execute `aws configure export-credentials --profile garage-flow --format process` e permita a renovação durante operações longas. Se estiver usando um arquivo de configuração AWS separado para esse perfil, o processo deve apontar para o arquivo de configuração original ao invocar o AWS CLI. Proteja ambos os arquivos, mantenha a sessão AWS válida e não registre nem versione a saída do processo. Teste a leitura do estado antes de aplicar; em caso de falha de estado, preserve o arquivo de recuperação e confira o lock e a linhagem antes de qualquer nova operação.
 
 Aplicar somente após revisar o plano e autorizar custos. O plano pode conter informações sensíveis e está ignorado pelo Git. Para outro ambiente, usar estado isolado e parâmetros próprios; não reutilizar o estado de outro projeto.
 
