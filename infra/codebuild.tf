@@ -53,7 +53,7 @@ data "aws_iam_policy_document" "codebuild_deploy" {
     resources = ["*"]
   }
   statement {
-    actions   = ["codeconnections:GetConnection", "codeconnections:GetConnectionToken", "codeconnections:UseConnection"]
+    actions   = ["codeconnections:GetConnection", "codeconnections:GetConnectionToken", "codeconnections:UseConnection", "codestar-connections:GetConnection", "codestar-connections:GetConnectionToken", "codestar-connections:UseConnection"]
     resources = [var.github_connection_arn]
   }
   statement {

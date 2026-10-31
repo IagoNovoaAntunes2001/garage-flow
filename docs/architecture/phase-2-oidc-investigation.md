@@ -32,6 +32,11 @@ Um segundo runner, definido em `infra/codebuild-plan.tf`, prepara uma identidade
 Terraform. Os dois fluxos precisam ser validados na AWS. A role de planejamento usa a política gerenciada
 AWS `ReadOnlyAccess`, que tem escopo de leitura amplo, além das permissões específicas de lock do estado.
 
+A tentativa de criação do projeto de deploy retornou `OAuthProviderException` ao acessar a conexão, apesar
+de ela estar `AVAILABLE`. A simulação IAM permitiu as ações `codeconnections` para a role e negou as ações
+correspondentes `codestar-connections`. As duas variantes foram incluídas no Terraform como correção a
+validar; o erro também pode envolver propagação IAM ou configuração da instalação GitHub.
+
 A sessão atual conseguiu consultar a lista de projetos CodeBuild e roles IAM em Ohio, e o IAM informou
 que o role manager está habilitado. Essas leituras não comprovam autorização para criar o projeto, seu
 webhook ou as roles necessárias; nenhum desses recursos foi criado. Após autenticação em Ohio, a simulação

@@ -26,7 +26,7 @@ data "aws_iam_policy_document" "codebuild_plan" {
     resources = ["${aws_cloudwatch_log_group.codebuild_plan[0].arn}:*"]
   }
   statement {
-    actions   = ["codeconnections:GetConnection", "codeconnections:GetConnectionToken", "codeconnections:UseConnection"]
+    actions   = ["codeconnections:GetConnection", "codeconnections:GetConnectionToken", "codeconnections:UseConnection", "codestar-connections:GetConnection", "codestar-connections:GetConnectionToken", "codestar-connections:UseConnection"]
     resources = [var.github_connection_arn]
   }
   statement {
