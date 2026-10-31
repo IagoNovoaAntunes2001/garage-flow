@@ -17,8 +17,9 @@ including administrators. A second-person approval is not mandatory in the curre
 Feature and maintenance branches target `develop`; `develop`, `release/*`, and `hotfix/*` may target `main`.
 Publishing a commit to `main` runs CI and starts the AWS deployment only when the CI job succeeds. The deploy
 uses that same commit and refuses to continue if a newer commit has reached `main`. Changes and pull requests
-on `develop` run CI without deploying to AWS. The GitHub Actions deployment requires its CodeBuild runner and
-other AWS prerequisites to be configured and validated.
+on `develop` run CI without deploying to AWS. Deployment also requires repository variable
+`AWS_DEPLOY_ENABLED=true`; it stays false until the CodeBuild runner, secrets and other AWS prerequisites have
+been configured and validated. After enabling it, rerun the main push workflow to deploy the current commit.
 
 ## Implementation cycle
 
