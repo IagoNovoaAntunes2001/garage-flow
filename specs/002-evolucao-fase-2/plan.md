@@ -33,6 +33,8 @@ Reavaliação após design: os artefatos mantêm os gates; deploy e desempenho r
 - `.github/workflows/`: pipeline de build, testes, imagem e deploy em runner com acesso ao cluster.
 - `docs/` e `README.md`: arquitetura, execução, evidências e entrega.
 
+O escalonamento de nós usa Karpenter com EKS Pod Identity e um NodePool limitado a `t3.small`; o controlador fica no grupo gerenciado. O HPA continua responsável por réplicas. A instalação usa um runner CodeBuild dedicado após aprovação de build em `main`, conforme [operação e custos](../../docs/architecture/phase-2-karpenter.md).
+
 ## Sequência
 
 1. Inventariar contratos e testes existentes; registrar compatibilidade e medir consulta atual.

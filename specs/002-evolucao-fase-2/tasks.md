@@ -72,6 +72,10 @@
 - [ ] T035 Verificar elegibilidade e créditos da conta AWS, estimar custos e documentar remoção e retenção dos recursos em `infra/README.md` antes de aplicar o plano.
 - [ ] T036 Validar conexão GitHub App, permissões e filtros do runner temporário CodeBuild para GitHub Actions; substituir a dependência de OIDC no planejamento Terraform com identidade própria e registrar evidências.
 
+- [ ] T037 Provisionar identidade Pod Identity, descoberta e runner dedicado do Karpenter com Terraform e plano revisado.
+- [ ] T038 Instalar Karpenter por GitHub Actions na main, validar NodePool e EC2NodeClass.
+- [ ] T039 Demonstrar criação e consolidação de um nó adicional e registrar custos e evidências.
+
 ## Dependências e execução
 
 Preparação precede fundamentos; US1, US2 e US3 dependem dos fundamentos. US4 depende da integração transacional com transições existentes; US5 depende da aplicação configurável e do ambiente escolhido. A validação de entrega depende de todas as histórias. T032 foi concluída; a varredura de segurança deve continuar sendo executada antes de cada deploy. Testes precedem alterações de comportamento. Trabalhos em arquivos distintos, como testes de US2 e US3, podem ser preparados em paralelo; não executar simultaneamente edições no mesmo arquivo. O MVP começa com US1, seguido por US2 e US3, antes da demonstração completa.

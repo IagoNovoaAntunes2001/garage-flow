@@ -40,6 +40,10 @@ Phase 2 work is tracked separately in [the Phase 2 task list](specs/002-evolucao
 It adds prioritized service-order queries, external quotation decisions, status notifications, Kubernetes,
 Terraform, and deployment automation. The infrastructure and delivery workflow remain in progress.
 
+Karpenter can add and consolidate EKS worker nodes alongside the pod-level HPA; its setup,
+limits, security tradeoffs, demonstration, and cleanup are described in
+[Phase 2 Karpenter](docs/architecture/phase-2-karpenter.md).
+
 ## Technology baseline
 
 - Kotlin targeting JVM 17

@@ -1,0 +1,30 @@
+apiVersion: karpenter.sh/v1
+kind: NodePool
+metadata:
+  name: garage-flow
+spec:
+  template:
+    spec:
+      nodeClassRef:
+        group: karpenter.k8s.aws
+        kind: EC2NodeClass
+        name: garage-flow
+      expireAfter: Never
+      requirements:
+        - key: node.kubernetes.io/instance-type
+          operator: In
+          values: ["t3.small"]
+        - key: kubernetes.io/arch
+          operator: In
+          values: ["amd64"]
+        - key: kubernetes.io/os
+          operator: In
+          values: ["linux"]
+        - key: karpenter.sh/capacity-type
+          operator: In
+          values: ["on-demand"]
+  limits:
+    cpu: "2"
+  disruption:
+    consolidationPolicy: WhenEmpty
+    consolidateAfter: 2m
