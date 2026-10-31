@@ -35,9 +35,44 @@ jobs:
           docker save -o "$RUNNER_TEMP/garage-flow-image.tar" garage-flow:ci
           docker run --rm -v "$RUNNER_TEMP/garage-flow-image.tar:/input/image.tar:ro" ghcr.io/aquasecurity/trivy:0.69.3@sha256:bcc376de8d77cfe086a917230e818dc9f8528e3c852f7b1aff648949b6258d1c image --scanners vuln --severity CRITICAL --exit-code 1 --input /input/image.tar
 
-  deploy:
+  karpenter:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_DEPLOY_ENABLED == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.KARPENTER_ENABLED == 'true'
+    concurrency:
+      group: garage-flow-infrastructure
+      cancel-in-progress: false
+    runs-on: codebuild-${{ vars.CODEBUILD_KARPENTER_PROJECT_NAME }}-${{ github.run_id }}-${{ github.run_attempt }}
+    environment: aws-infrastructure
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Confirm this is the current main commit
+        run: |
+          git fetch origin main
+          test "$(git rev-parse origin/main)" = "$GITHUB_SHA" || { echo 'A newer release is already on main.'; exit 1; }
+      - uses: azure/setup-kubectl@v4
+        with:
+          version: ${{ vars.KUBECTL_VERSION }}
+      - uses: azure/setup-helm@v4.3.0
+        with:
+          version: v3.18.6
+      - name: Install Karpenter and configure its node pool
+        env:
+          CLUSTER: ${{ vars.EKS_CLUSTER_NAME }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          set -euo pipefail
+          aws eks update-kubeconfig --name "$CLUSTER" --region "$AWS_REGION"
+          kubectl rollout status daemonset/eks-pod-identity-agent -n kube-system --timeout=3m
+          helm upgrade --install karpenter oci://public.ecr.aws/karpenter/karpenter --version 1.15.1 --namespace kube-system --values k8s/karpenter/values.yaml --set "settings.clusterName=$CLUSTER" --wait --timeout 5m
+          kubectl apply -f k8s/karpenter/nodeclass.yaml -f k8s/karpenter/nodepool.yaml
+          kubectl wait --for=condition=Ready ec2nodeclass/garage-flow --timeout=3m
+          kubectl wait --for=condition=Ready nodepool/garage-flow --timeout=3m
+
+  deploy:
+    needs: [build, karpenter]
+    if: always() && needs.build.result == 'success' && (needs.karpenter.result == 'success' || needs.karpenter.result == 'skipped') && github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.AWS_DEPLOY_ENABLED == 'true'
     concurrency:
       group: garage-flow-deploy
       cancel-in-progress: false

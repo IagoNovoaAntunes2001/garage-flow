@@ -85,6 +85,16 @@ variable "enable_codebuild_runner" {
   default     = false
 }
 
+variable "enable_karpenter" {
+  description = "Create Karpenter identity, discovery tags and installation runner"
+  type        = bool
+  default     = false
+  validation {
+    condition     = !var.enable_karpenter || var.enable_codebuild_runner
+    error_message = "Karpenter requires the CodeBuild runners."
+  }
+}
+
 variable "github_connection_arn" {
   description = "Previously authorized CodeConnections GitHub App connection ARN"
   type        = string

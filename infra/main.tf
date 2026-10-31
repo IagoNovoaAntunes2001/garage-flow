@@ -20,8 +20,11 @@ module "vpc" {
   single_nat_gateway   = true
   enable_dns_hostnames = true
   public_subnet_tags   = { "kubernetes.io/role/elb" = "1" }
-  private_subnet_tags  = { "kubernetes.io/role/internal-elb" = "1" }
-  tags                 = local.tags
+  private_subnet_tags = merge(
+    { "kubernetes.io/role/internal-elb" = "1" },
+    var.enable_karpenter ? { "karpenter.sh/discovery" = var.cluster_name } : {},
+  )
+  tags = local.tags
 }
 
 module "eks" {
@@ -38,6 +41,7 @@ module "eks" {
   enable_cluster_creator_admin_permissions = false
   kms_key_administrators                   = [var.cluster_admin_role_arn]
   enable_irsa                              = false
+  node_security_group_tags                 = var.enable_karpenter ? { "karpenter.sh/discovery" = var.cluster_name } : {}
   access_entries = merge(
     {
       cluster_creator = {
@@ -67,13 +71,29 @@ module "eks" {
         }
       }
     } : {},
+    var.enable_karpenter ? {
+      karpenter_operator = {
+        principal_arn = aws_iam_role.codebuild_karpenter[0].arn
+        policy_associations = {
+          admin = {
+            policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
+            access_scope = {
+              type = "cluster"
+            }
+          }
+        }
+      }
+    } : {},
   )
-  addons = {
-    coredns        = {}
-    kube-proxy     = {}
-    vpc-cni        = { before_compute = true }
-    metrics-server = {}
-  }
+  addons = merge(
+    {
+      coredns        = {}
+      kube-proxy     = {}
+      vpc-cni        = { before_compute = true }
+      metrics-server = {}
+    },
+    var.enable_karpenter ? { eks-pod-identity-agent = {} } : {},
+  )
   eks_managed_node_groups = {
     application = {
       instance_types = [var.node_instance_type]

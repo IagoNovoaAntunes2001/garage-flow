@@ -1,0 +1,22 @@
+apiVersion: karpenter.k8s.aws/v1
+kind: EC2NodeClass
+metadata:
+  name: garage-flow
+spec:
+  amiFamily: AL2023
+  amiSelectorTerms:
+    - alias: al2023@v20261031
+  instanceProfile: garage-flow-karpenter-node
+  subnetSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: garage-flow
+  securityGroupSelectorTerms:
+    - tags:
+        karpenter.sh/discovery: garage-flow
+  metadataOptions:
+    httpEndpoint: enabled
+    httpTokens: required
+    httpPutResponseHopLimit: 1
+  tags:
+    Project: garage-flow
+    ManagedBy: Karpenter
