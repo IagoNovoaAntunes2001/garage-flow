@@ -5,7 +5,7 @@ metadata:
 spec:
   amiFamily: AL2023
   amiSelectorTerms:
-    - alias: al2023@v20261031
+    - alias: al2023@v20261026
   instanceProfile: garage-flow-karpenter-node
   subnetSelectorTerms:
     - tags:
