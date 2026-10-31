@@ -27,9 +27,10 @@ conectar CodeBuild ao repositório, a criação das roles, as políticas efetiva
 com o EKS e os custos devem ser verificados antes de considerar essa alternativa funcional. Não copiar a
 sessão pessoal do AWS CLI para os secrets do repositório.
 
-A configuração opcional em `infra/codebuild.tf` e o workflow manual de deploy preparam essa alternativa,
-mas não foram validados na AWS. O workflow `terraform-plan.yml` ainda depende de OIDC e requer solução
-própria, com identidade e permissões distintas das de deploy.
+A configuração opcional em `infra/codebuild.tf` e o workflow manual de deploy preparam essa alternativa.
+Um segundo runner, definido em `infra/codebuild-plan.tf`, prepara uma identidade distinta para o plano
+Terraform. Os dois fluxos precisam ser validados na AWS. A role de planejamento usa a política gerenciada
+AWS `ReadOnlyAccess`, que tem escopo de leitura amplo, além das permissões específicas de lock do estado.
 
 A sessão atual conseguiu consultar a lista de projetos CodeBuild e roles IAM em Ohio, e o IAM informou
 que o role manager está habilitado. Essas leituras não comprovam autorização para criar o projeto, seu

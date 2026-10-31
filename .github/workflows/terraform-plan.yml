@@ -5,11 +5,11 @@ on:
 
 permissions:
   contents: read
-  id-token: write
 
 jobs:
   plan:
-    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    runs-on: codebuild-${{ vars.CODEBUILD_PLAN_PROJECT_NAME }}-${{ github.run_id }}-${{ github.run_attempt }}
     environment: aws-plan
     defaults:
       run:
@@ -19,10 +19,6 @@ jobs:
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.13.5
-      - uses: aws-actions/configure-aws-credentials@v4
-        with:
-          role-to-assume: ${{ vars.AWS_PLAN_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
       - name: Initialize and validate
         env:
           STATE_BUCKET: ${{ vars.TF_STATE_BUCKET }}
@@ -36,4 +32,10 @@ jobs:
           TF_VAR_aws_region: ${{ vars.AWS_REGION }}
           TF_VAR_kubernetes_version: ${{ vars.EKS_KUBERNETES_VERSION }}
           TF_VAR_eks_public_access_cidrs: ${{ vars.EKS_PUBLIC_ACCESS_CIDRS }}
+          TF_VAR_enable_gateway: 'true'
+          TF_VAR_jwt_secret_arn: ${{ vars.JWT_SECRET_ARN }}
+          TF_VAR_enable_codebuild_runner: 'true'
+          TF_VAR_github_connection_arn: ${{ vars.CODECONNECTION_ARN }}
+          TF_VAR_github_deploy_actor_id: ${{ vars.DEPLOY_ACTOR_ID }}
+          TF_VAR_terraform_state_bucket: ${{ vars.TF_STATE_BUCKET }}
         run: terraform plan -input=false -no-color

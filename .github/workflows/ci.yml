@@ -19,6 +19,13 @@ jobs:
       - uses: gradle/actions/setup-gradle@v4
       - name: Build and test
         run: ./gradlew --no-daemon build koverVerify
+      - name: Upload test report on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-report
+          path: build/reports/tests/test/
+          if-no-files-found: ignore
       - name: Test Lambda authorizer
         run: python3 -m unittest discover -s infra/authorizer -p 'test_*.py'
       - name: Build container image

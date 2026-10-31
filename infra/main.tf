@@ -91,6 +91,7 @@ resource "aws_db_subnet_group" "database" {
 resource "aws_db_instance" "database" {
   identifier                  = "${var.cluster_name}-postgres"
   engine                      = "postgres"
+  engine_version              = "16.13"
   instance_class              = var.db_instance_class
   allocated_storage           = 20
   storage_encrypted           = true

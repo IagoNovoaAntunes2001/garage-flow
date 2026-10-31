@@ -85,3 +85,13 @@ variable "github_deploy_actor_id" {
     error_message = "A numeric GitHub actor ID is required for the runner."
   }
 }
+
+variable "terraform_state_bucket" {
+  description = "S3 bucket containing Terraform state and its lock file"
+  type        = string
+  default     = ""
+  validation {
+    condition     = !var.enable_codebuild_runner || length(var.terraform_state_bucket) > 0
+    error_message = "The Terraform state bucket is required when CodeBuild runners are enabled."
+  }
+}
