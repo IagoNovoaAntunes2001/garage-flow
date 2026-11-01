@@ -17,3 +17,7 @@ output "image_repository_url" {
 output "api_gateway_url" {
   value = var.enable_gateway ? aws_apigatewayv2_stage.application[0].invoke_url : null
 }
+
+output "application_secrets_role_arn" {
+  value = aws_iam_role.application_secrets.arn
+}

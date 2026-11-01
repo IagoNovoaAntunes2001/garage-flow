@@ -1,0 +1,51 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: garage-flow-rds-validation
+spec:
+  backoffLimit: 0
+  ttlSecondsAfterFinished: 300
+  template:
+    metadata:
+      labels:
+        app: garage-flow-rds-validation
+    spec:
+      restartPolicy: Never
+      serviceAccountName: garage-flow
+      containers:
+        - name: psql
+          image: postgres:16-alpine@sha256:0cefaabd882e42bcb2a2f3dc56d3ce4770560ba62fd7f197f1a2e008fd5731ab
+          command: ["/bin/sh", "-ec"]
+          args:
+            - |
+              jdbc_target="${DATABASE_URL#jdbc:postgresql://}"
+              database_host="${jdbc_target%%:*}"
+              database_name="${jdbc_target##*/}"
+              database_name="${database_name%%\?*}"
+              database_username="$(cat /mnt/secrets-store/DATABASE_USERNAME)"
+              export PGPASSWORD="$(cat /mnt/secrets-store/DATABASE_PASSWORD)"
+              server_version="$(psql -h "$database_host" -U "$database_username" -d "$database_name" -Atc 'show server_version')"
+              migration_version="$(psql -h "$database_host" -U "$database_username" -d "$database_name" -Atc 'select version from flyway_schema_history where success order by installed_rank desc limit 1')"
+              service_order_count="$(psql -h "$database_host" -U "$database_username" -d "$database_name" -Atc 'select count(*) from service_orders')"
+              printf 'rds_validation=PASS server_version=%s migration_version=%s service_orders=%s\n' "$server_version" "$migration_version" "$service_order_count"
+          envFrom:
+            - configMapRef:
+                name: garage-flow-runtime
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+            runAsGroup: 70
+            runAsNonRoot: true
+            runAsUser: 70
+          volumeMounts:
+            - name: application-secrets
+              mountPath: /mnt/secrets-store
+              readOnly: true
+      volumes:
+        - name: application-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: garage-flow

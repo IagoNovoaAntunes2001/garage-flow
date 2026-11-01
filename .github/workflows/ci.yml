@@ -39,7 +39,7 @@ jobs:
 
   karpenter:
     needs: build
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && vars.KARPENTER_ENABLED == 'true'
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main' && (vars.KARPENTER_ENABLED == 'true' || vars.AWS_DEPLOY_ENABLED == 'true')
     concurrency:
       group: garage-flow-infrastructure
       cancel-in-progress: false
@@ -59,7 +59,20 @@ jobs:
       - uses: azure/setup-helm@v4.3.0
         with:
           version: v3.18.6
+      - name: Install the AWS Secrets Store provider
+        env:
+          CLUSTER: ${{ vars.EKS_CLUSTER_NAME }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
+        run: |
+          set -euo pipefail
+          aws eks update-kubeconfig --name "$CLUSTER" --region "$AWS_REGION"
+          kubectl rollout status daemonset/eks-pod-identity-agent -n kube-system --timeout=3m
+          helm repo add secrets-store-csi-driver https://kubernetes-sigs.github.io/secrets-store-csi-driver/charts
+          helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
+          helm upgrade --install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --version 1.6.1 --namespace kube-system --set 'tokenRequests[0].audience=sts.amazonaws.com' --set 'tokenRequests[1].audience=pods.eks.amazonaws.com' --wait --timeout 5m
+          helm upgrade --install secrets-provider-aws aws-secrets-manager/secrets-store-csi-driver-provider-aws --version 3.1.4 --namespace kube-system --set secrets-store-csi-driver.install=false --wait --timeout 5m
       - name: Install Karpenter and configure its node pool
+        if: vars.KARPENTER_ENABLED == 'true'
         env:
           CLUSTER: ${{ vars.EKS_CLUSTER_NAME }}
           AWS_REGION: ${{ vars.AWS_REGION }}
@@ -160,38 +173,19 @@ jobs:
         run: |
           aws rds wait db-instance-available --db-instance-identifier "$DB_INSTANCE"
           aws eks update-kubeconfig --name "$CLUSTER" --region "$AWS_REGION"
-      - name: Configure secrets and deploy manifests
+      - name: Configure runtime and deploy manifests
         env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          DATABASE_USERNAME: ${{ secrets.DATABASE_USERNAME }}
-          DATABASE_PASSWORD: ${{ secrets.DATABASE_PASSWORD }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          QUOTATION_INTEGRATION_SECRET: ${{ secrets.QUOTATION_INTEGRATION_SECRET }}
-          ADMIN_USERNAME: ${{ secrets.ADMIN_USERNAME }}
-          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
-          MAIL_HOST: ${{ secrets.MAIL_HOST }}
-          MAIL_USERNAME: ${{ secrets.MAIL_USERNAME }}
-          MAIL_PASSWORD: ${{ secrets.MAIL_PASSWORD }}
+          DB_INSTANCE: ${{ vars.RDS_INSTANCE_ID }}
+          AWS_REGION: ${{ vars.AWS_REGION }}
           ECR_REPOSITORY: ${{ vars.ECR_REPOSITORY_URL }}
           IMAGE_TAG: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
         run: |
           set -euo pipefail
-          for name in DATABASE_URL DATABASE_USERNAME DATABASE_PASSWORD JWT_SECRET QUOTATION_INTEGRATION_SECRET; do
-            if [ -z "${!name}" ]; then echo "Missing required secret: $name" >&2; exit 1; fi
-          done
-          if [ "${#JWT_SECRET}" -lt 32 ] || [ "${#QUOTATION_INTEGRATION_SECRET}" -lt 32 ]; then
-            echo "JWT and integration secrets must contain at least 32 characters" >&2
-            exit 1
-          fi
-          umask 077
-          secret_file=$(mktemp)
-          trap 'rm -f "$secret_file"' EXIT
-          for name in DATABASE_URL DATABASE_USERNAME DATABASE_PASSWORD JWT_SECRET QUOTATION_INTEGRATION_SECRET ADMIN_USERNAME ADMIN_PASSWORD MAIL_HOST MAIL_USERNAME MAIL_PASSWORD; do
-            value="${!name}"
-            case "$value" in *$'\n'*|*$'\r'*) echo "Invalid multiline secret: $name" >&2; exit 1;; esac
-            printf '%s=%s\n' "$name" "$value" >> "$secret_file"
-          done
-          kubectl create secret generic garage-flow-secrets --from-env-file="$secret_file" --dry-run=client -o yaml | kubectl apply -f -
-          kubectl apply -f k8s/configmap.yaml -f k8s/service.yaml -f k8s/hpa.yaml
+          database_host=$(aws rds describe-db-instances --region "$AWS_REGION" --db-instance-identifier "$DB_INSTANCE" --query 'DBInstances[0].Endpoint.Address' --output text)
+          test -n "$database_host"
+          kubectl apply -f k8s/service-account.yaml -f k8s/secret-provider-class.yaml
+          kubectl apply -f k8s/configmap.yaml -f k8s/runtime-config.yaml -f k8s/service.yaml -f k8s/hpa.yaml
+          kubectl create configmap garage-flow-runtime --from-literal="DATABASE_URL=jdbc:postgresql://$database_host:5432/garageflow" --dry-run=client -o yaml | kubectl apply -f -
           kubectl set image --local -f k8s/deployment.yaml backend="$ECR_REPOSITORY:$IMAGE_TAG" -o yaml | kubectl apply -f -
           kubectl rollout status deployment/garage-flow --timeout=5m
+          kubectl delete secret garage-flow-secrets --ignore-not-found
