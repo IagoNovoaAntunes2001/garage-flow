@@ -1,6 +1,6 @@
 # Contratos propostos
 
-Os contratos existentes de criação, rastreio e decisões do cliente permanecem em vigor; atualizar a especificação completa em `specs/001-repair-shop-mvp/contracts/openapi.yaml` na implementação.
+Os contratos existentes de criação, rastreio e decisões do cliente permanecem em vigor. A [especificação OpenAPI completa gerada pela aplicação](../../../docs/api/openapi.json) é a referência para os campos e respostas atuais; o contrato de planejamento da fase 1 é histórico.
 
 ## Listagem operacional
 
@@ -15,6 +15,8 @@ Os contratos existentes de criação, rastreio e decisões do cliente permanecem
 ```
 
 `decision` aceita `APPROVED` ou `REJECTED`; `reason` é opcional para recusa. Sucesso retorna ID da OS, versão e resultado sem dados sensíveis. Reenvio idêntico retorna mesmo resultado; evento reutilizado com conteúdo diferente, decisão conflitante ou versão obsoleta retorna 409; credencial inválida retorna 401/403; corpo inválido retorna 400; OS inexistente retorna 404. A regra não permite executar serviços sem aprovação válida.
+
+Após uma recusa, uma tentativa de iniciar a execução retorna HTTP 400 com o código `QUOTATION_APPROVAL_REQUIRED`. Uma aprovação conflitante para o orçamento já decidido retorna HTTP 409.
 
 ## Notificações
 
