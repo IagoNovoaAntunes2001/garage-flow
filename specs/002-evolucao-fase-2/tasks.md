@@ -75,7 +75,7 @@
 - [X] T037 Provisionar identidade Pod Identity, descoberta e runner dedicado do Karpenter com Terraform e plano revisado.
 - [X] T038 Instalar Karpenter por GitHub Actions na main, validar NodePool e EC2NodeClass.
 - [X] T039 Demonstrar criação e consolidação de um nó adicional e registrar custos e evidências.
-- [ ] T040 Automatizar a entrega do RDS por runner dedicado no GitHub Actions, bloquear planos destrutivos e validar o fluxo no estado real.
+- [X] T040 Automatizar a entrega do RDS por runner dedicado no GitHub Actions, bloquear planos destrutivos e validar o fluxo no estado real.
 
 ## Dependências e execução
 
