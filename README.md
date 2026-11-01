@@ -123,12 +123,14 @@ check fail; monitor failed or pending records separately.
 
 ## Phase 2 infrastructure
 
-[Proposed architecture](docs/architecture/phase-2-proposed.md) shows application components, planned AWS
-resources, and deployment flow. [Terraform instructions](infra/README.md) describe the proposed EKS, RDS,
-VPC, and ECR resources and their prerequisites. Kubernetes manifests are in `k8s/`; create the Secret
-outside version control before applying them. AWS provisioning, deployment automation, and the final
-demonstration remain to be validated. The API specification is available in
-[the OpenAPI contract](specs/001-repair-shop-mvp/contracts/openapi.yaml), and Swagger is available locally.
+[Architecture and deployment flow](docs/architecture/phase-2-proposed.md) describe the modular application,
+API Gateway, Lambda authorizer, EKS, RDS, and GitHub Actions runners deployed in AWS. The
+[Terraform instructions](infra/README.md) cover provisioning and the guarded database delivery workflow;
+[Kubernetes manifests](k8s/) include the application and HPA. The [Karpenter guide](docs/architecture/phase-2-karpenter.md)
+records a successful node scale-up and consolidation test. The SMTP service, demonstration video, and final
+submission remain to be completed. The [OpenAPI contract](specs/001-repair-shop-mvp/contracts/openapi.yaml)
+documents the Phase 1 API; the [Phase 2 API changes](specs/002-evolucao-fase-2/contracts/api.md) are documented
+separately, and the complete generated Swagger is available locally at `/v3/api-docs`.
 
 ## ServiceOrder lifecycle
 
