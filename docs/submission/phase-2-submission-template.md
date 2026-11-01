@@ -14,7 +14,7 @@ API para gestão de ordens de serviço de oficina, implementada como monólito m
 
 O ambiente de demonstração usa API Gateway, Lambda authorizer, VPC Link, NLB interno, EKS e RDS PostgreSQL privado na região `us-east-2`. O Terraform descreve os recursos; o GitHub Actions executa build, testes, análise de imagem e deploy via runners CodeBuild. O HPA ajusta réplicas, e o Karpenter provisiona e consolida nós adicionais. O [desenho completo e fluxo de deploy](../architecture/phase-2-proposed.md), [instruções de infraestrutura](../../infra/README.md) e [evidências disponíveis](phase-2-validation.md) estão no repositório.
 
-A especificação completa gerada da API fica disponível em `/v3/api-docs` no perfil local, conforme o [README](../../README.md). O [roteiro da gravação](phase-2-video-script.md) descreve os itens a demonstrar.
+A [especificação OpenAPI completa](../api/openapi.json) pode ser importada no Postman; a versão gerada pela aplicação também fica disponível em `/v3/api-docs` no perfil local, conforme o [README](../../README.md). O [roteiro da gravação](phase-2-video-script.md) descreve os itens a demonstrar.
 
 ## Antes de exportar e entregar
 

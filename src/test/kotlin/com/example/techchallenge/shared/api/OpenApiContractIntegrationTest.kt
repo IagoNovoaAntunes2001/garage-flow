@@ -2,6 +2,8 @@ package com.example.techchallenge.shared.api
 
 import com.example.techchallenge.support.PostgreSqlIntegrationTest
 import tools.jackson.databind.ObjectMapper
+import tools.jackson.databind.node.ObjectNode
+import org.junit.jupiter.api.Assertions.assertEquals
 import org.junit.jupiter.api.Assertions.assertFalse
 import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Test
@@ -10,12 +12,30 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc
 import org.springframework.test.context.TestPropertySource
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.get
+import java.nio.file.Files
+import java.nio.file.Path
 
 @AutoConfigureMockMvc
 @TestPropertySource(properties = ["springdoc.api-docs.enabled=true"])
 class OpenApiContractIntegrationTest : PostgreSqlIntegrationTest() {
     @Autowired private lateinit var mockMvc: MockMvc
     @Autowired private lateinit var objectMapper: ObjectMapper
+
+    @Test
+    fun `published OpenAPI snapshot matches the current application paths and schemas`() {
+        val body = mockMvc.get("/v3/api-docs").andExpect { status { isOk() } }
+            .andReturn().response.contentAsString
+        val live = objectMapper.readTree(body)
+        val snapshot = objectMapper.readTree(Files.readString(Path.of("docs/api/openapi.json")))
+
+        val livePaths = live.path("paths").deepCopy() as ObjectNode
+        listOf("/test/domain/{kind}", "/test/page", "/test/validation").forEach(livePaths::remove)
+        assertEquals(livePaths, snapshot.path("paths"), "Export the updated API paths")
+        val liveComponents = live.path("components").deepCopy() as ObjectNode
+        val liveSchemas = liveComponents.path("schemas") as ObjectNode
+        listOf("FoundationTestRequest", "PageRequestDto").forEach(liveSchemas::remove)
+        assertEquals(liveComponents, snapshot.path("components"), "Export the updated API schemas")
+    }
 
     @Test
     fun `publishes OpenAPI metadata bearer scheme and representative contract paths`() {
