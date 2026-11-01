@@ -36,6 +36,7 @@ jobs:
           TF_VAR_enable_gateway: 'true'
           TF_VAR_jwt_secret_arn: ${{ vars.JWT_SECRET_ARN }}
           TF_VAR_enable_codebuild_runner: 'true'
+          TF_VAR_enable_database_runner: ${{ vars.DATABASE_RUNNER_INFRA_ENABLED || 'false' }}
           TF_VAR_enable_karpenter: ${{ vars.KARPENTER_INFRA_ENABLED || 'false' }}
           TF_VAR_github_connection_arn: ${{ vars.CODECONNECTION_ARN }}
           TF_VAR_github_deploy_actor_id: ${{ vars.DEPLOY_ACTOR_ID }}
