@@ -95,6 +95,16 @@ variable "enable_karpenter" {
   }
 }
 
+variable "enable_database_runner" {
+  description = "Create a dedicated runner for non-destructive RDS delivery"
+  type        = bool
+  default     = false
+  validation {
+    condition     = !var.enable_database_runner || var.enable_codebuild_runner
+    error_message = "The database runner requires the CodeBuild runners."
+  }
+}
+
 variable "github_connection_arn" {
   description = "Previously authorized CodeConnections GitHub App connection ARN"
   type        = string
