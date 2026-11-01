@@ -55,7 +55,7 @@
 - [X] T021 [US5] Revisar imagem, health checks e ambiente local em `Dockerfile` e `docker-compose.yml`.
 - [X] T022 [US5] Criar manifests de aplicação, serviços, configuração e secrets sem valores reais em `k8s/`.
 - [X] T023 [US5] Criar HPA e recursos de métricas e limites em `k8s/` e `infra/`.
-- [ ] T024 [US5] Provisionar cluster e banco persistente com Terraform em `infra/`, segundo ambiente aprovado e sem guardar segredos no repositório.
+- [X] T024 [US5] Provisionar cluster e banco persistente com Terraform em `infra/`, segundo ambiente aprovado e sem guardar segredos no repositório.
 - [ ] T025 [US5] Configurar build, testes, imagem, banco e deploy em `.github/workflows/` com credenciais protegidas.
 - [ ] T026 [US5] Validar instalação, persistência, pipeline e escala e registrar evidências em `docs/submission/`.
 
@@ -75,6 +75,7 @@
 - [X] T037 Provisionar identidade Pod Identity, descoberta e runner dedicado do Karpenter com Terraform e plano revisado.
 - [X] T038 Instalar Karpenter por GitHub Actions na main, validar NodePool e EC2NodeClass.
 - [X] T039 Demonstrar criação e consolidação de um nó adicional e registrar custos e evidências.
+- [ ] T040 Automatizar a entrega do RDS por runner dedicado no GitHub Actions, bloquear planos destrutivos e validar o fluxo no estado real.
 
 ## Dependências e execução
 
