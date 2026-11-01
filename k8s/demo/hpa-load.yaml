@@ -1,0 +1,29 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: garage-flow-hpa-test
+spec:
+  activeDeadlineSeconds: 180
+  ttlSecondsAfterFinished: 60
+  backoffLimit: 0
+  template:
+    spec:
+      restartPolicy: Never
+      containers:
+        - name: traffic
+          image: busybox:1.36.1
+          command:
+            - /bin/sh
+            - -c
+            - |
+              for n in 1 2 3 4 5 6 7 8 9 10 11 12; do
+                (while true; do wget -q -T 3 -O /dev/null http://garage-flow/actuator/health || true; done) &
+              done
+              wait
+          resources:
+            requests:
+              cpu: 100m
+              memory: 64Mi
+            limits:
+              cpu: "1"
+              memory: 128Mi

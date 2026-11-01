@@ -123,12 +123,14 @@ check fail; monitor failed or pending records separately.
 
 ## Phase 2 infrastructure
 
-[Proposed architecture](docs/architecture/phase-2-proposed.md) shows application components, planned AWS
-resources, and deployment flow. [Terraform instructions](infra/README.md) describe the proposed EKS, RDS,
-VPC, and ECR resources and their prerequisites. Kubernetes manifests are in `k8s/`; create the Secret
-outside version control before applying them. AWS provisioning, deployment automation, and the final
-demonstration remain to be validated. The API specification is available in
-[the OpenAPI contract](specs/001-repair-shop-mvp/contracts/openapi.yaml), and Swagger is available locally.
+[Architecture and deployment flow](docs/architecture/phase-2-proposed.md) describe the modular application,
+API Gateway, Lambda authorizer, EKS, RDS, and GitHub Actions runners deployed in AWS. The
+[Terraform instructions](infra/README.md) cover provisioning and the guarded database delivery workflow;
+[Kubernetes manifests](k8s/) include the application and HPA. The [Karpenter guide](docs/architecture/phase-2-karpenter.md)
+records a successful node scale-up and consolidation test. The SMTP service, demonstration video, and final
+submission remain to be completed. The [complete OpenAPI specification](docs/api/openapi.json) is generated from the current application and can
+be imported into Postman or a compatible client. Swagger UI and the live specification are available locally
+at `/swagger-ui.html` and `/v3/api-docs`.
 
 ## ServiceOrder lifecycle
 
@@ -149,4 +151,6 @@ approval before execution resumes.
 - [ServiceOrder Event Storming](docs/ddd/event-storming-service-order.md)
 - [Inventory Event Storming](docs/ddd/event-storming-inventory.md)
 - [Vulnerability Report](docs/security/vulnerability-report.md)
-- [Submission Checklist](docs/submission/checklist.md)
+- [Phase 2 validation and remaining work](docs/submission/phase-2-validation.md)
+- [Phase 2 submission template](docs/submission/phase-2-submission-template.md)
+- [Phase 1 Submission Checklist](docs/submission/checklist.md)
