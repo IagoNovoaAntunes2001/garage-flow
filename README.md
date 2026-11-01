@@ -151,4 +151,6 @@ approval before execution resumes.
 - [ServiceOrder Event Storming](docs/ddd/event-storming-service-order.md)
 - [Inventory Event Storming](docs/ddd/event-storming-inventory.md)
 - [Vulnerability Report](docs/security/vulnerability-report.md)
-- [Submission Checklist](docs/submission/checklist.md)
+- [Phase 2 validation and remaining work](docs/submission/phase-2-validation.md)
+- [Phase 2 submission template](docs/submission/phase-2-submission-template.md)
+- [Phase 1 Submission Checklist](docs/submission/checklist.md)
