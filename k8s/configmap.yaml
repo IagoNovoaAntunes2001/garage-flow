@@ -4,6 +4,7 @@ metadata:
   name: garage-flow-config
 data:
   SPRING_PROFILES_ACTIVE: "default"
+  SPRING_CONFIG_IMPORT: "configtree:/mnt/secrets-store/"
   JWT_ISSUER: "garage-flow"
   NOTIFICATIONS_ENABLED: "false"
   MAIL_PORT: "587"

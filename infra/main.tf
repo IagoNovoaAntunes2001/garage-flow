@@ -85,15 +85,13 @@ module "eks" {
       }
     } : {},
   )
-  addons = merge(
-    {
-      coredns        = {}
-      kube-proxy     = {}
-      vpc-cni        = { before_compute = true }
-      metrics-server = {}
-    },
-    var.enable_karpenter ? { eks-pod-identity-agent = {} } : {},
-  )
+  addons = {
+    coredns                = {}
+    kube-proxy             = {}
+    vpc-cni                = { before_compute = true }
+    metrics-server         = {}
+    eks-pod-identity-agent = {}
+  }
   eks_managed_node_groups = {
     application = {
       instance_types = [var.node_instance_type]

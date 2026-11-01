@@ -56,26 +56,28 @@
 - [X] T022 [US5] Criar manifests de aplicação, serviços, configuração e secrets sem valores reais em `k8s/`.
 - [X] T023 [US5] Criar HPA e recursos de métricas e limites em `k8s/` e `infra/`.
 - [X] T024 [US5] Provisionar cluster e banco persistente com Terraform em `infra/`, segundo ambiente aprovado e sem guardar segredos no repositório.
-- [ ] T025 [US5] Configurar build, testes, imagem, banco e deploy em `.github/workflows/` com credenciais protegidas.
-- [ ] T026 [US5] Validar instalação, persistência, pipeline e escala e registrar evidências em `docs/submission/`.
+- [X] T025 [US5] Configurar build, testes, imagem, banco e deploy em `.github/workflows/` com credenciais protegidas.
+- [X] T026 [US5] Validar instalação, persistência, pipeline e escala e registrar evidências em `docs/submission/`.
 
 ## Fase 8: Entrega e validação
 
 - [X] T027 Atualizar README e desenho de arquitetura, infraestrutura e deploy em `README.md` e `docs/architecture/`.
 - [X] T028 Atualizar collection e link das APIs em `README.md` e `specs/001-repair-shop-mvp/contracts/openapi.yaml`.
-- [ ] T029 Preparar roteiro e evidências do vídeo de até 15 minutos em `docs/submission/`.
+- [X] T029 Preparar roteiro e evidências do vídeo de até 15 minutos em `docs/submission/`.
 - [ ] T030 Preparar PDF de submissão com repositório, arquitetura e vídeo em `docs/submission/` e confirmar compartilhamento com `soat-architecture`.
-- [ ] T031 Executar testes, cobertura, validações de segurança e cenários de `specs/002-evolucao-fase-2/quickstart.md` e registrar resultados em `docs/submission/`.
+- [X] T031 Executar testes, cobertura, validações de segurança e cenários de `specs/002-evolucao-fase-2/quickstart.md` e registrar resultados em `docs/submission/`.
 - [X] T032 Resolver os dois achados críticos restantes do Spring MVC, avaliar migração compatível ou correção suportada e repetir varredura em `docs/security/phase-2-image-scan.md` antes de liberar deploy.
-- [ ] T033 Provisionar e validar API Gateway, VPC Link e NLB interno definidos em `infra/gateway.tf`, incluindo conectividade e remoção segura.
-- [ ] T034 Validar Lambda authorizer de `infra/authorizer/handler.py` no gateway com tokens válidos e inválidos, rotas de clientes e falhas de secrets.
+- [X] T033 Provisionar e validar API Gateway, VPC Link e NLB interno definidos em `infra/gateway.tf`, incluindo conectividade e remoção segura.
+- [X] T034 Validar Lambda authorizer de `infra/authorizer/handler.py` no gateway com tokens válidos e inválidos, rotas de clientes e falhas de secrets.
 - [ ] T035 Verificar elegibilidade e créditos da conta AWS, estimar custos e documentar remoção e retenção dos recursos em `infra/README.md` antes de aplicar o plano.
-- [ ] T036 Validar conexão GitHub App, permissões e filtros do runner temporário CodeBuild para GitHub Actions; substituir a dependência de OIDC no planejamento Terraform com identidade própria e registrar evidências.
+- [X] T036 Validar conexão GitHub App, permissões e filtros do runner temporário CodeBuild para GitHub Actions; substituir a dependência de OIDC no planejamento Terraform com identidade própria e registrar evidências.
 
 - [X] T037 Provisionar identidade Pod Identity, descoberta e runner dedicado do Karpenter com Terraform e plano revisado.
 - [X] T038 Instalar Karpenter por GitHub Actions na main, validar NodePool e EC2NodeClass.
 - [X] T039 Demonstrar criação e consolidação de um nó adicional e registrar custos e evidências.
 - [X] T040 Automatizar a entrega do RDS por runner dedicado no GitHub Actions, bloquear planos destrutivos e validar o fluxo no estado real.
+- [X] T041 Migrar segredos de aplicação para AWS Secrets Manager, consumir por Secrets Store CSI e EKS Pod Identity e remover a cópia persistente do Kubernetes.
+- [X] T042 Validar o RDS separadamente da API com credencial de aplicação, versão Flyway, persistência e reconciliação Terraform sem mudanças.
 
 ## Dependências e execução
 
