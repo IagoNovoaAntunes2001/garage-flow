@@ -128,9 +128,9 @@ API Gateway, Lambda authorizer, EKS, RDS, and GitHub Actions runners deployed in
 [Terraform instructions](infra/README.md) cover provisioning and the guarded database delivery workflow;
 [Kubernetes manifests](k8s/) include the application and HPA. The [Karpenter guide](docs/architecture/phase-2-karpenter.md)
 records a successful node scale-up and consolidation test. The SMTP service, demonstration video, and final
-submission remain to be completed. The [OpenAPI contract](specs/001-repair-shop-mvp/contracts/openapi.yaml)
-documents the Phase 1 API; the [Phase 2 API changes](specs/002-evolucao-fase-2/contracts/api.md) are documented
-separately, and the complete generated Swagger is available locally at `/v3/api-docs`.
+submission remain to be completed. The [complete OpenAPI specification](docs/api/openapi.json) is generated from the current application and can
+be imported into Postman or a compatible client. Swagger UI and the live specification are available locally
+at `/swagger-ui.html` and `/v3/api-docs`.
 
 ## ServiceOrder lifecycle
 
@@ -151,4 +151,6 @@ approval before execution resumes.
 - [ServiceOrder Event Storming](docs/ddd/event-storming-service-order.md)
 - [Inventory Event Storming](docs/ddd/event-storming-inventory.md)
 - [Vulnerability Report](docs/security/vulnerability-report.md)
-- [Submission Checklist](docs/submission/checklist.md)
+- [Phase 2 validation and remaining work](docs/submission/phase-2-validation.md)
+- [Phase 2 submission template](docs/submission/phase-2-submission-template.md)
+- [Phase 1 Submission Checklist](docs/submission/checklist.md)

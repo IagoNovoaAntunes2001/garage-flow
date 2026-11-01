@@ -10,3 +10,7 @@ Publicar no YouTube ou Vimeo como público ou não listado, com duração máxim
 6. **Encerramento (1 minuto)**: mostrar a documentação, collection, limitações do ambiente e link do repositório compartilhado com `soat-architecture`.
 
 Após gravar, incluir a URL real no README e no PDF de submissão. Confirmar que o vídeo, o desenho e os comandos descrevem os recursos realmente implantados.
+
+## Roteiro reproduzível para HPA
+
+Com a aplicação saudável e métricas disponíveis, acompanhe em um terminal `kubectl get hpa garage-flow -w` e em outro aplique `kubectl apply -f k8s/demo/hpa-load.yaml`. O Job gera requisições reais ao endpoint de saúde por até três minutos e pode afetar a resposta da API e o banco. Pare assim que houver evidência com `kubectl delete -f k8s/demo/hpa-load.yaml --ignore-not-found` e aguarde a janela de redução do HPA. Para verificar capacidade, use `kubectl get deployments,pods,nodes` e `kubectl get nodeclaims`. O Job tem encerramento automático caso não seja removido manualmente.
