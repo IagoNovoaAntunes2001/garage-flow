@@ -1,7 +1,7 @@
 # Especificação: Evolução da oficina — fase 2
 
 **Criada**: 2026-10-30
-**Estado**: Rascunho
+**Estado**: Implementada; entrega externa de vídeo/PDF pendente
 **Fonte**: SOAT - Fase 2 - Tech challenge.pdf, páginas 2–6; especificação da fase 1 em `specs/001-repair-shop-mvp/spec.md`.
 
 ## Cenários e testes
@@ -24,9 +24,9 @@ O atendente consulta as ordens em andamento para priorizar o trabalho.
 
 **Aceitação**: a listagem apresenta Execução, Aguardando Aprovação, Diagnóstico e Recebida nessa ordem; dentro de cada situação, as mais antigas aparecem primeiro. Finalizada e Entregue não aparecem na listagem operacional, mas permanecem disponíveis para consulta histórica. A ordenação é aplicada antes da paginação.
 
-### 4. Comunicar atualização de status (P2)
+### 4. Comunicar atualização de status por ferramenta externa (P2)
 
-O cliente recebe por ferramenta externa, como e-mail, informação sobre a mudança de situação da sua OS.
+O cliente recebe por ferramenta externa, operada pela equipe quando necessário, informação sobre a mudança de situação da sua OS. E-mail é um exemplo de canal e não cria uma API de negócio adicional.
 
 **Aceitação**: uma transição válida gera comunicação identificando a OS e a nova situação; falha de entrega não inventa uma transição nem expõe dados indevidos, e pode ser identificada e tratada. Repetições não produzem mudanças adicionais no estado da OS.
 
@@ -84,6 +84,6 @@ A equipe provisiona infraestrutura, publica aplicação e banco, acompanha a exe
 ## Premissas
 
 - A prioridade é agrupada por status e depois por antiguidade; o PDF não especifica desempate, portanto usa-se identificador estável.
-- A solução escolhe e documenta um canal de comunicação e mecanismo autenticado de integração; o PDF não impõe fornecedor.
+- A solução registra a mudança e suporta um adaptador externo; a equipe é responsável pelo canal efetivamente usado. O PDF cita e-mail apenas como exemplo e não impõe fornecedor nem envio direto pela API.
 - Recursos reais, credenciais, vídeo e compartilhamento do repositório dependem de configuração e ações da equipe.
 - A constituição foi atualizada para permitir a infraestrutura exigida, preservando o monólito e os invariantes de domínio.

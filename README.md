@@ -37,8 +37,9 @@ approval workflows, tracking, metrics, API quality, testing, operations, documen
 and finally `release/1.0.0`.
 
 Phase 2 work is tracked separately in [the Phase 2 task list](specs/002-evolucao-fase-2/tasks.md).
-It adds prioritized service-order queries, external quotation decisions, status notifications, Kubernetes,
-Terraform, and deployment automation. The infrastructure and delivery workflow remain in progress.
+It adds prioritized service-order queries, external quotation decisions, optional status notifications,
+Kubernetes, Terraform, and deployment automation. The AWS environment and delivery workflow have been
+provisioned and validated; the submission video remains an external delivery step.
 
 Karpenter can add and consolidate EKS worker nodes alongside the pod-level HPA; its setup,
 limits, security tradeoffs, demonstration, and cleanup are described in
@@ -112,8 +113,10 @@ disables access. Use TLS for exposed endpoints. Configure the secret outside ver
 administrative order list defaults to open orders sorted by status and age; an explicit status filter
 allows historical queries.
 
-Status notifications are queued transactionally. Set `NOTIFICATIONS_ENABLED=true` and configure SMTP to
-send them; the Compose development environment includes Mailpit at `http://localhost:8025`. A customer
+Status notifications are queued transactionally. E-mail is an optional external channel, not a business API;
+the AWS demonstration leaves `NOTIFICATIONS_ENABLED=false` because the team handles communication outside
+the API. To validate the adapter locally, set `NOTIFICATIONS_ENABLED=true` and use the Mailpit instance from
+Compose at `http://localhost:8025`. A customer
 without an email produces a failed notification for investigation. SMTP delivery is at least once, so a
 retry after a delivery confirmation failure can duplicate a message.
 The worker attempts delivery at most five times, then retains the notification as `FAILED`; operators must
@@ -127,8 +130,10 @@ check fail; monitor failed or pending records separately.
 API Gateway, Lambda authorizer, EKS, RDS, and GitHub Actions runners deployed in AWS. The
 [Terraform instructions](infra/README.md) cover provisioning and the guarded database delivery workflow;
 [Kubernetes manifests](k8s/) include the application and HPA. The [Karpenter guide](docs/architecture/phase-2-karpenter.md)
-records a successful node scale-up and consolidation test. The SMTP service, demonstration video, and final
-submission remain to be completed. The [complete OpenAPI specification](docs/api/openapi.json) is generated from the current application and can
+records a successful node scale-up and consolidation test. Application credentials are read directly from
+AWS Secrets Manager through EKS Pod Identity and the Secrets Store CSI Driver; GitHub does not hold their
+values. The demonstration video and final submission remain external delivery steps. The
+[complete OpenAPI specification](docs/api/openapi.json) is generated from the current application and can
 be imported into Postman or a compatible client. Swagger UI and the live specification are available locally
 at `/swagger-ui.html` and `/v3/api-docs`.
 

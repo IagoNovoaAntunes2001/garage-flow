@@ -12,6 +12,10 @@ spec:
       labels:
         app: garage-flow
     spec:
+      serviceAccountName: garage-flow
+      securityContext:
+        fsGroup: 999
+        fsGroupChangePolicy: OnRootMismatch
       containers:
         - name: backend
           image: garage-flow:local
@@ -22,8 +26,12 @@ spec:
           envFrom:
             - configMapRef:
                 name: garage-flow-config
-            - secretRef:
-                name: garage-flow-secrets
+            - configMapRef:
+                name: garage-flow-runtime
+          volumeMounts:
+            - name: application-secrets
+              mountPath: /mnt/secrets-store
+              readOnly: true
           resources:
             requests:
               cpu: 250m
@@ -45,3 +53,10 @@ spec:
             httpGet:
               path: /actuator/health/readiness
               port: http
+      volumes:
+        - name: application-secrets
+          csi:
+            driver: secrets-store.csi.k8s.io
+            readOnly: true
+            volumeAttributes:
+              secretProviderClass: garage-flow

@@ -40,7 +40,7 @@ O escalonamento de nós usa Karpenter com EKS Pod Identity e um NodePool limitad
 1. Inventariar contratos e testes existentes; registrar compatibilidade e medir consulta atual.
 2. Adicionar consulta operacional com filtro de estados, prioridade e desempate por data e ID no banco antes da paginação. Preservar consulta histórica.
 3. Acrescentar callback externo autenticado, versionado e idempotente; reutilizar regra de decisão e rejeitar conflito e versão obsoleta.
-4. Registrar eventos em outbox na mesma transação e entregar por e-mail, com tentativas limitadas, observabilidade e reconciliação. Cobrir indisponibilidade e duplicação.
+4. Registrar eventos em outbox na mesma transação e disponibilizar adaptador externo opcional, com tentativas limitadas, observabilidade e reconciliação. O ambiente local usa e-mail/Mailpit para teste; na AWS o canal fica desativado e sob responsabilidade operacional da equipe.
 5. Preparar imagem e Compose, readiness/liveness, recursos e conexão com banco. Implementar manifests e HPA, com métricas e persistência.
 6. Provisionar EKS, rede e RDS privado com Terraform; documentar ferramentas, estado, variáveis, custos e ciclo de vida. Proteger segredos e estado. Revisar plano de recursos antes de aplicar.
 7. Configurar pipeline com build, testes, imagem, deploy de banco, migração controlada e manifests. Falhas interrompem etapas; PRs não confiáveis não recebem segredos.
