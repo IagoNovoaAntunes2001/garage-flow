@@ -1,0 +1,464 @@
+{
+  "_type": "export",
+  "__export_format": 4,
+  "__export_date": "2026-11-02T00:00:00.000Z",
+  "__export_source": "garage-flow.phase2",
+  "resources": [
+    {
+      "_id": "wrk_garage_flow_phase2",
+      "parentId": null,
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "Garage Flow — Tech Challenge Fase 2",
+      "description": "Fluxo demonstrativo da API no AWS API Gateway. Preencha o ambiente antes de executar.",
+      "scope": "collection",
+      "_type": "workspace"
+    },
+    {
+      "_id": "env_garage_flow_phase2_base",
+      "parentId": "wrk_garage_flow_phase2",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "Base Environment",
+      "data": {
+        "base_url": "https://COLE-AQUI-O-INVOKE-URL.execute-api.us-east-2.amazonaws.com",
+        "admin_username": "COLE_AQUI_O_USUARIO_DO_SECRET_MANAGER",
+        "admin_password": "COLE_AQUI_A_SENHA_DO_SECRET_MANAGER",
+        "integration_token": "COLE_AQUI_O_VALOR_DE_garage-flow-integration",
+        "customer_document": "12345678901",
+        "license_plate": "ABC1D23",
+        "customer_id": "",
+        "vehicle_id": "",
+        "service_id": "",
+        "part_id": "",
+        "service_order_id": "",
+        "tracking_token": ""
+      },
+      "dataPropertyOrder": null,
+      "color": null,
+      "isPrivate": false,
+      "metaSortKey": 0,
+      "_type": "environment"
+    },
+    {
+      "_id": "fld_01_auth",
+      "parentId": "wrk_garage_flow_phase2",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "01 — Autenticação",
+      "description": "Gera o JWT administrativo de 15 minutos. O Gateway/Lambda apenas valida esse token.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 100,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_auth_token",
+      "parentId": "fld_01_auth",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "01. Obter JWT administrativo",
+      "description": "Credenciais vêm do segredo garage-flow/bootstrap-admin no AWS Secrets Manager.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"username\": \"{{ _.admin_username }}\",\n  \"password\": \"{{ _.admin_password }}\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/auth/token",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_02_setup",
+      "parentId": "wrk_garage_flow_phase2",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "02 — Dados da oficina",
+      "description": "Cadastros mínimos para abrir uma ordem de serviço.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 200,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_create_customer",
+      "parentId": "fld_02_setup",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "02. Criar cliente",
+      "description": "O id retornado é usado automaticamente pelo próximo request.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"document\": \"{{ _.customer_document }}\",\n  \"name\": \"Cliente demonstração Fase 2\",\n  \"email\": \"demo-fase2@example.com\",\n  \"phone\": \"11999990000\"\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/customers",
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_vehicle",
+      "parentId": "fld_02_setup",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "03. Criar veículo",
+      "description": "Usa automaticamente o id retornado pelo cadastro do cliente.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"licensePlate\": \"{{ _.license_plate }}\",\n  \"brand\": \"Toyota\",\n  \"model\": \"Corolla\",\n  \"year\": 2022\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/customers/{{ response 'body' '$.id' '02. Criar cliente' }}/vehicles",
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_service",
+      "parentId": "fld_02_setup",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "04. Cadastrar serviço",
+      "description": "O id retornado é usado automaticamente na abertura da OS.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"name\": \"Revisão demonstrativa\",\n  \"description\": \"Revisão geral para apresentação\",\n  \"price\": 350.00,\n  \"active\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/services",
+      "_type": "request"
+    },
+    {
+      "_id": "req_create_part",
+      "parentId": "fld_02_setup",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "05. Cadastrar peça",
+      "description": "O id retornado é usado automaticamente na abertura da OS.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"type\": \"PART\",\n  \"name\": \"Filtro demonstrativo\",\n  \"description\": \"Peça usada na demonstração\",\n  \"unitPrice\": 80.00,\n  \"availableQuantity\": 10,\n  \"active\": true\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 500,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/inventory-items",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_03_order",
+      "parentId": "wrk_garage_flow_phase2",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "03 — Ciclo da OS",
+      "description": "Demonstra abertura, diagnóstico, orçamento, aprovação, execução, status e listagem.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 300,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_create_order",
+      "parentId": "fld_03_order",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "06. Abrir ordem de serviço",
+      "description": "serviceOrder.id e trackingToken são usados automaticamente nos requests seguintes.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"customerDocument\": \"{{ _.customer_document }}\",\n  \"vehicleId\": \"{{ response 'body' '$.id' '03. Criar veículo' }}\",\n  \"items\": [\n    { \"type\": \"SERVICE\", \"referenceId\": \"{{ response 'body' '$.id' '04. Cadastrar serviço' }}\", \"quantity\": 1 },\n    { \"type\": \"PART\", \"referenceId\": \"{{ response 'body' '$.id' '05. Cadastrar peça' }}\", \"quantity\": 1 }\n  ]\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders",
+      "_type": "request"
+    },
+    {
+      "_id": "req_get_order",
+      "parentId": "fld_03_order",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "07. Consultar status da OS",
+      "description": "Demonstra o status RECEIVED e o identificador único da OS.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 200,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}",
+      "_type": "request"
+    },
+    {
+      "_id": "req_start_diagnosis",
+      "parentId": "fld_03_order",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "08. Iniciar diagnóstico",
+      "method": "POST",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 300,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}/diagnosis/start",
+      "_type": "request"
+    },
+    {
+      "_id": "req_request_approval",
+      "parentId": "fld_03_order",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "09. Solicitar aprovação do orçamento",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"items\": []\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" }
+      ],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 400,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}/quotation/request-approval",
+      "_type": "request"
+    },
+    {
+      "_id": "req_external_approval",
+      "parentId": "fld_03_order",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "10. Aprovar orçamento externamente",
+      "description": "Reenvie a mesma requisição para demonstrar idempotência. O eventId deve ser único por evento.",
+      "method": "POST",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n  \"eventId\": \"insomnia-demo-001\",\n  \"serviceOrderId\": \"{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}\",\n  \"quotationVersion\": 1,\n  \"decision\": \"APPROVED\",\n  \"reason\": null\n}"
+      },
+      "parameters": [],
+      "headers": [
+        { "name": "Content-Type", "value": "application/json" },
+        { "name": "X-Integration-Token", "value": "{{ _.integration_token }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": 500,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/integrations/quotation-decisions",
+      "_type": "request"
+    },
+    {
+      "_id": "req_start_execution",
+      "parentId": "fld_03_order",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "11. Iniciar execução",
+      "method": "POST",
+      "body": {},
+      "parameters": [],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 600,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}/execution/start",
+      "_type": "request"
+    },
+    {
+      "_id": "req_active_orders",
+      "parentId": "fld_03_order",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "12. Listar OS ativas priorizadas",
+      "description": "Demonstra a ordenação Execução > Aguardando Aprovação > Diagnóstico > Recebida e exclusão de finalizadas/entregues.",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        { "name": "page", "value": "0" },
+        { "name": "size", "value": "20" }
+      ],
+      "headers": [],
+      "authentication": {
+        "type": "bearer",
+        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+      },
+      "metaSortKey": 700,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/active",
+      "_type": "request"
+    },
+    {
+      "_id": "fld_04_customer",
+      "parentId": "wrk_garage_flow_phase2",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "04 — Visão do cliente",
+      "description": "Consulta com o token de rastreio retornado na abertura da OS.",
+      "environment": {},
+      "environmentPropertyOrder": null,
+      "metaSortKey": 400,
+      "_type": "request_group"
+    },
+    {
+      "_id": "req_track_order",
+      "parentId": "fld_04_customer",
+      "modified": 1793577600000,
+      "created": 1793577600000,
+      "name": "13. Cliente consultar status",
+      "description": "Não usa JWT administrativo; usa X-Service-Order-Token.",
+      "method": "GET",
+      "body": {},
+      "parameters": [],
+      "headers": [
+        { "name": "X-Service-Order-Token", "value": "{{ response 'body' '$.trackingToken' '06. Abrir ordem de serviço' }}" }
+      ],
+      "authentication": {},
+      "metaSortKey": 100,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "url": "{{ _.base_url }}/api/v1/tracking/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}",
+      "_type": "request"
+    }
+  ]
+}

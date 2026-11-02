@@ -134,7 +134,8 @@ records a successful node scale-up and consolidation test. Application credentia
 AWS Secrets Manager through EKS Pod Identity and the Secrets Store CSI Driver; GitHub does not hold their
 values. The demonstration video and final submission remain external delivery steps. The
 [complete OpenAPI specification](docs/api/openapi.json) is generated from the current application and can
-be imported into Postman or a compatible client. Swagger UI and the live specification are available locally
+be imported into Postman or a compatible client. The [Insomnia demonstration collection](docs/api/insomnia-phase-2.json)
+is organized in the sequence used in the presentation. Swagger UI and the live specification are available locally
 at `/swagger-ui.html` and `/v3/api-docs`.
 
 ## ServiceOrder lifecycle
