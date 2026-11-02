@@ -71,6 +71,7 @@ jobs:
           helm repo add aws-secrets-manager https://aws.github.io/secrets-store-csi-driver-provider-aws
           helm upgrade --install csi-secrets-store secrets-store-csi-driver/secrets-store-csi-driver --version 1.6.1 --namespace kube-system --set 'tokenRequests[0].audience=sts.amazonaws.com' --set 'tokenRequests[1].audience=pods.eks.amazonaws.com' --wait --timeout 5m
           helm upgrade --install secrets-provider-aws aws-secrets-manager/secrets-store-csi-driver-provider-aws --version 3.1.4 --namespace kube-system --set secrets-store-csi-driver.install=false --wait --timeout 5m
+          kubectl apply -f k8s/service-account.yaml -f k8s/secret-provider-class.yaml
       - name: Install Karpenter and configure its node pool
         if: vars.KARPENTER_ENABLED == 'true'
         env:
@@ -183,7 +184,6 @@ jobs:
           set -euo pipefail
           database_host=$(aws rds describe-db-instances --region "$AWS_REGION" --db-instance-identifier "$DB_INSTANCE" --query 'DBInstances[0].Endpoint.Address' --output text)
           test -n "$database_host"
-          kubectl apply -f k8s/service-account.yaml -f k8s/secret-provider-class.yaml
           kubectl apply -f k8s/configmap.yaml -f k8s/runtime-config.yaml -f k8s/service.yaml -f k8s/hpa.yaml
           kubectl create configmap garage-flow-runtime --from-literal="DATABASE_URL=jdbc:postgresql://$database_host:5432/garageflow" --dry-run=client -o yaml | kubectl apply -f -
           kubectl set image --local -f k8s/deployment.yaml backend="$ECR_REPOSITORY:$IMAGE_TAG" -o yaml | kubectl apply -f -
