@@ -110,7 +110,7 @@
       ],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 200,
       "isPrivate": false,
@@ -141,7 +141,7 @@
       ],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 300,
       "isPrivate": false,
@@ -151,7 +151,7 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "url": "{{ _.base_url }}/api/v1/admin/customers/{{ response 'body' '$.id' '02. Criar cliente' }}/vehicles",
+      "url": "{{ _.base_url }}/api/v1/admin/customers/{% response 'body', '$.id', 'req_create_customer' %}/vehicles",
       "_type": "request"
     },
     {
@@ -172,7 +172,7 @@
       ],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 400,
       "isPrivate": false,
@@ -203,7 +203,7 @@
       ],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 500,
       "isPrivate": false,
@@ -238,7 +238,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"customerDocument\": \"{{ _.customer_document }}\",\n  \"vehicleId\": \"{{ response 'body' '$.id' '03. Criar veículo' }}\",\n  \"items\": [\n    { \"type\": \"SERVICE\", \"referenceId\": \"{{ response 'body' '$.id' '04. Cadastrar serviço' }}\", \"quantity\": 1 },\n    { \"type\": \"PART\", \"referenceId\": \"{{ response 'body' '$.id' '05. Cadastrar peça' }}\", \"quantity\": 1 }\n  ]\n}"
+        "text": "{\n  \"customerDocument\": \"{{ _.customer_document }}\",\n  \"vehicleId\": \"{% response 'body', '$.id', 'req_create_vehicle' %}\",\n  \"items\": [\n    { \"type\": \"SERVICE\", \"referenceId\": \"{% response 'body', '$.id', 'req_create_service' %}\", \"quantity\": 1 },\n    { \"type\": \"PART\", \"referenceId\": \"{% response 'body', '$.id', 'req_create_part' %}\", \"quantity\": 1 }\n  ]\n}"
       },
       "parameters": [],
       "headers": [
@@ -246,7 +246,7 @@
       ],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 100,
       "isPrivate": false,
@@ -272,7 +272,7 @@
       "headers": [],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 200,
       "isPrivate": false,
@@ -282,7 +282,7 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{% response 'body', '$.serviceOrder.id', 'req_create_order' %}",
       "_type": "request"
     },
     {
@@ -297,7 +297,7 @@
       "headers": [],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 300,
       "isPrivate": false,
@@ -307,7 +307,7 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}/diagnosis/start",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{% response 'body', '$.serviceOrder.id', 'req_create_order' %}/diagnosis/start",
       "_type": "request"
     },
     {
@@ -327,7 +327,7 @@
       ],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 400,
       "isPrivate": false,
@@ -337,7 +337,7 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}/quotation/request-approval",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{% response 'body', '$.serviceOrder.id', 'req_create_order' %}/quotation/request-approval",
       "_type": "request"
     },
     {
@@ -350,7 +350,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n  \"eventId\": \"insomnia-demo-001\",\n  \"serviceOrderId\": \"{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}\",\n  \"quotationVersion\": 1,\n  \"decision\": \"APPROVED\",\n  \"reason\": null\n}"
+        "text": "{\n  \"eventId\": \"insomnia-demo-001\",\n  \"serviceOrderId\": \"{% response 'body', '$.serviceOrder.id', 'req_create_order' %}\",\n  \"quotationVersion\": 1,\n  \"decision\": \"APPROVED\",\n  \"reason\": null\n}"
       },
       "parameters": [],
       "headers": [
@@ -381,7 +381,7 @@
       "headers": [],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 600,
       "isPrivate": false,
@@ -391,7 +391,7 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}/execution/start",
+      "url": "{{ _.base_url }}/api/v1/admin/service-orders/{% response 'body', '$.serviceOrder.id', 'req_create_order' %}/execution/start",
       "_type": "request"
     },
     {
@@ -410,7 +410,7 @@
       "headers": [],
       "authentication": {
         "type": "bearer",
-        "token": "{{ response 'body' '$.accessToken' '01. Obter JWT administrativo' }}"
+        "token": "{% response 'body', '$.accessToken', 'req_auth_token' %}"
       },
       "metaSortKey": 700,
       "isPrivate": false,
@@ -446,7 +446,7 @@
       "body": {},
       "parameters": [],
       "headers": [
-        { "name": "X-Service-Order-Token", "value": "{{ response 'body' '$.trackingToken' '06. Abrir ordem de serviço' }}" }
+        { "name": "X-Service-Order-Token", "value": "{% response 'body', '$.trackingToken', 'req_create_order' %}" }
       ],
       "authentication": {},
       "metaSortKey": 100,
@@ -457,7 +457,7 @@
       "settingEncodeUrl": true,
       "settingRebuildPath": true,
       "settingFollowRedirects": "global",
-      "url": "{{ _.base_url }}/api/v1/tracking/service-orders/{{ response 'body' '$.serviceOrder.id' '06. Abrir ordem de serviço' }}",
+      "url": "{{ _.base_url }}/api/v1/tracking/service-orders/{% response 'body', '$.serviceOrder.id', 'req_create_order' %}",
       "_type": "request"
     }
   ]
